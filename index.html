@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title></title>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<a class="skip" id="skipLink" href="#app"></a>
+<div class="topbar"><div class="wrap"><span id="topLeft"></span><span id="topRight"></span></div></div>
+<header class="site-header"><div class="wrap nav-row">
+<a class="brand" href="#/home" aria-label="Home"><span class="logo" id="logoText"></span><span><span id="brandName"></span><small id="brandSub"></small></span></a>
+<nav class="main" id="mainNav" aria-label="Primary">
+<a href="#/home"></a><a href="#/about"></a><a href="#/programmes"></a><a href="#/staff"></a>
+<a href="#/research"></a><a href="#/resources"></a><a href="#/gallery"></a><a href="#/contact"></a>
+</nav>
+<div class="tools"><button class="btn-dark" id="themeBtn" aria-label="Toggle dark mode"><i data-lucide="moon"></i></button><button class="hamburger" id="menuBtn" aria-label="Menu"><i data-lucide="menu"></i></button></div>
+</div></header>
+<main id="app" class="wrap" tabindex="-1"></main>
+<div class="modal-back" id="modalBack"><div class="modal" role="dialog" aria-modal="true"><div id="modalBody"></div><p><button class="btn btn-primary" id="modalClose"></button></p></div></div>
+<div class="lightbox" id="lightbox"><div><img id="lbImg" alt=""/><h3 id="lbTitle"></h3><p id="lbCap"></p><button class="btn btn-primary" id="lbClose"></button></div></div>
+<footer class="footer"><div class="wrap grid g4">
+<div><h3 id="footQuick"></h3><p><a href="#/programmes"></a><br/><a href="#/staff"></a><br/><a href="#/resources"></a><br/><a href="#/contact"></a></p></div>
+<div><h3 id="footAccredTitle"></h3><p class="muted" style="color:#cfe0d8" id="footAccred"></p></div>
+<div><h3 id="footSocialTitle"></h3><p><a id="socLi" href="#"></a> · <a id="socX" href="#"></a> · <a id="socYt" href="#"></a></p></div>
+<div><h3 id="footEmergTitle"></h3><p><span id="footSec"></span><br/><span id="footCli"></span></p></div>
+</div><div class="wrap copy" id="footCopy"></div></footer>
+<script type="module" src="dist/app.js"></script>
+</body></html>
