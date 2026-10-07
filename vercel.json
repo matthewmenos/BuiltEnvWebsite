@@ -1,12 +1,9 @@
 {
-  "functions": "api/app/api",
-  "framework": "none",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
   "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".vercel/output",
-  "devCommand": "npm run dev",
-  "regions": ["shanghai"],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "buildCommand": "npm run build -w frontends",
+  "outputDirectory": "frontends/dist",
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
 }
+
