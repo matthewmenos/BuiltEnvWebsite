@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import { env } from './env';
 
 export function generateId(): string {
@@ -20,7 +20,7 @@ export async function verifyPassword(
 
 export function signToken(id: string, email: string, role: string): string {
   return jwt.sign({ id, email, role }, env.jwtSecret, {
-    expiresIn: env.jwtExpiresIn,
+    expiresIn: env.jwtExpiresIn as SignOptions['expiresIn'],
   });
 }
 

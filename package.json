@@ -4,18 +4,29 @@
   "private": true,
   "description": "Department of Built Environment - Full-stack website",
   "scripts": {
-    "build": "npm run build -w api && npm run build -w frontends",
-    "dev:api": "npm run dev -w api",
+    "build": "npm run build -w frontends",
     "dev:frontends": "npm run dev -w frontends",
     "vercel": "vercel",
     "deploy": "vercel --prod",
     "deploy:ci": "vercel --prod --yes"
   },
   "workspaces": [
-    "api",
     "frontends"
   ],
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.0",
+    "bcryptjs": "^2.4.3",
+    "drizzle-orm": "^0.33.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.12.12",
+    "@vercel/node": "^22.0.0",
+    "drizzle-kit": "^0.20.13"
   }
 }

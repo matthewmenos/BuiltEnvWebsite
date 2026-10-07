@@ -1,10 +1,6 @@
 # Vercel deployment bundle exclusions.
-# The repo root contains a Node workspace named `api/` (custom http server in
-# api/src/server.ts). Vercel auto-treats a top-level `api/` directory as
-# serverless functions, which this backend is NOT — so exclude it from the
-# Vercel bundle. This project deploys the Vite frontend only; run the API
-# separately (Render / Railway / Fly / VPS) and point the frontend at it.
-api
+# The top-level `api/` directory holds Vercel serverless functions and MUST be
+# deployed. Only exclude tooling, caches, and local-only files.
 node_modules
 .git
 .vscode

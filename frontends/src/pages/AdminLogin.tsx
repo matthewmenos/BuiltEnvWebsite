@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
@@ -29,7 +29,12 @@ const AdminLogin: React.FC = () => {
         throw new Error(data.error || 'Login failed');
       }
 
-      login(data.email);
+      // API returns { token, user: { email } } — persist the JWT so admin
+      // API calls can send `Authorization: Bearer <token>`.
+      if (!data.token || !data.user?.email) {
+        throw new Error('Login failed: malformed response');
+      }
+      login(data.user.email, data.token);
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');

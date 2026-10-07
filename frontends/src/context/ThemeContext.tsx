@@ -4,7 +4,8 @@ interface ThemeContextType {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
   isAuthenticated: boolean;
-  login: (email: string) => void;
+  token: string | null;
+  login: (email: string, token: string) => void;
   logout: () => void;
 }
 
@@ -12,7 +13,12 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(undefine
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
+    Boolean(sessionStorage.getItem('admin_token'))
+  );
+  const [token, setToken] = useState<string | null>(() =>
+    sessionStorage.getItem('admin_token')
+  );
 
   const toggleTheme = () => {
     setTheme((prev) => {
@@ -22,19 +28,37 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
-  const login = (email: string) => {
+  const login = (email: string, authToken: string) => {
     setIsAuthenticated(true);
-    // In a real app, store token in secure storage
+    setToken(authToken);
     sessionStorage.setItem('admin_email', email);
+    sessionStorage.setItem('admin_token', authToken);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const current = sessionStorage.getItem('admin_token');
+    // Best-effort server-side logout; local session clears regardless.
+    if (current) {
+      try {
+        await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: current }),
+        });
+      } catch {
+        // ignore network errors on logout
+      }
+    }
     setIsAuthenticated(false);
+    setToken(null);
     sessionStorage.removeItem('admin_email');
+    sessionStorage.removeItem('admin_token');
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isAuthenticated, login, logout }}>
+    <ThemeContext.Provider
+      value={{ theme, toggleTheme, isAuthenticated, token, login, logout }}
+    >
       {children}
     </ThemeContext.Provider>
   );
