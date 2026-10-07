@@ -4,6 +4,6 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build -w frontends",
   "outputDirectory": "frontends/dist",
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/((?!api/|.*\\..*).*)", "destination": "/index.html" }]
 }
 
