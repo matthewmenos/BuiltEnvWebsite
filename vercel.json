@@ -1,0 +1,12 @@
+{
+  "functions": "api/app/api",
+  "framework": "none",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".vercel/output",
+  "devCommand": "npm run dev",
+  "regions": ["shanghai"],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

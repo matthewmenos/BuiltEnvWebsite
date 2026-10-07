@@ -1,0 +1,48 @@
+import { IStaff } from 'shared/schema';
+
+export const staff: IStaff[] = [
+  {
+    id: 'staff-1',
+    name: 'Prof. Dr. Michael Turner',
+    position: 'Head of Department',
+    department: 'Engineering and Environment',
+    email: 'm.turner@builtenv.ac.uk',
+    phone: '+44 (0)117 331 2000',
+    address: 'Built Environment Building, Room 101, University Walk, Bristol, BS8 1TR',
+    bio: 'Michael Turner is a leading researcher in sustainable construction materials. He has published over 150 papers and leads the Materials Innovation research group. He holds a PhD in Civil Engineering from Imperial College London.',
+    image: '/assets/staff/turner.jpg',
+  },
+  {
+    id: 'staff-2',
+    name: 'Dr. Sarah Thompson',
+    position: 'Professor of Urban Planning',
+    department: 'Engineering and Environment',
+    email: 's.thompson@builtenv.ac.uk',
+    phone: '+44 (0)117 331 2001',
+    address: 'Built Environment Building, Room 215, University Walk, Bristol, BS8 1TR',
+    bio: 'Sarah Thompson specialises in urban regeneration and housing policy. She has worked with over 30 local authorities across the UK on regeneration projects. Her research focuses on equitable urban development and community engagement.',
+    image: '/assets/staff/thompson.jpg',
+  },
+  {
+    id: 'staff-3',
+    name: 'Dr. James Wilson',
+    position: 'Associate Professor of Construction Management',
+    department: 'Engineering and Environment',
+    email: 'j.wilson@builtenv.ac.uk',
+    phone: '+44 (0)117 331 2002',
+    address: 'Built Environment Building, Room 320, University Walk, Bristol, BS8 1TR',
+    bio: 'James Wilson is an expert in construction project management and cost engineering. He leads the Construction Innovation Lab and has consulted on projects across 12 countries. He received his PhD from Cardiff University.',
+    image: '/assets/staff/wilson.jpg',
+  },
+  {
+    id: 'staff-4',
+    name: 'Dr. Emily Carter',
+    position: 'Lecturer in Architectural Design',
+    department: 'Engineering and Environment',
+    email: 'e.carter@builtenv.ac.uk',
+    phone: '+44 (0)117 331 2003',
+    address: 'Built Environment Building, Room 118, University Walk, Bristol, BS8 1TR',
+    bio: 'Emily Carter teaches architectural design and sustainable design practices. Her research explores the relationship between design and environmental performance. She holds a PhD from the University of Cambridge.',
+    image: '/assets/staff/carter.jpg',
+  },
+];

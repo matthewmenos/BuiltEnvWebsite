@@ -1,0 +1,21 @@
+{
+  "name": "builtenvwebsite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Department of Built Environment - Full-stack website",
+  "scripts": {
+    "build": "npm run build -w api && npm run build -w frontends",
+    "dev:api": "npm run dev -w api",
+    "dev:frontends": "npm run dev -w frontends",
+    "vercel": "vercel",
+    "deploy": "vercel --prod",
+    "deploy:ci": "vercel --prod --yes"
+  },
+  "workspaces": [
+    "api",
+    "frontends"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
