@@ -2,19 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  Award,
-  Bell,
-  BookOpen,
-  Briefcase,
-  Building2,
   CalendarDays,
-  Download,
-  FileText,
   GraduationCap,
   Images,
   Mail,
   MapPin,
-  Microscope,
   Newspaper,
   Phone,
   Users,
@@ -24,7 +16,6 @@ import { news as newsData } from '../data/news';
 import { events as eventsData } from '../data/events';
 import { staff as staffData } from '../data/staff';
 import { galleryItems as galleryData } from '../data/gallery';
-import { Notice as noticesData, type Notice } from '../data/notices';
 import { IEvent, INews } from 'shared/schema';
 
 const formatDate = (dateStr: string) =>
@@ -55,9 +46,6 @@ const Home: React.FC = () => {
     .slice(0, 3);
   const featuredStaff = staffData.slice(0, 4);
   const galleryPreview = galleryData.slice(0, 4);
-  const activeNotices: Notice[] = noticesData
-    .filter((n) => n.status === 'Active')
-    .slice(0, 3);
   return (
     <div className="home">
       {/* 1 — HERO */}
@@ -173,47 +161,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 5 — RESEARCH & INNOVATION */}
-      <section className="container home-section">
-        <div className="section-head">
-          <h2 className="section-title">Research &amp; Innovation</h2>
-          <span className="section-note">Climate resilience &middot; Low-carbon materials &middot; Sustainable communities</span>
-        </div>
-        <div className="features-grid">
-          <div className="card feature-card">
-            <div className="feature-icon">
-              <Microscope size={28} aria-hidden="true" />
-            </div>
-            <h3 className="feature-title">Climate Resilience Lab</h3>
-            <p className="feature-description">
-              Applied research on flood-resilient housing, heat-responsive design
-              and infrastructure for Ghanaian cities.
-            </p>
-          </div>
-          <div className="card feature-card">
-            <div className="feature-icon">
-              <Building2 size={28} aria-hidden="true" />
-            </div>
-            <h3 className="feature-title">Materials Innovation</h3>
-            <p className="feature-description">
-              Testing low-carbon binders, laterite composites and durable local
-              materials for affordable construction.
-            </p>
-          </div>
-          <div className="card feature-card">
-            <div className="feature-icon">
-              <Award size={28} aria-hidden="true" />
-            </div>
-            <h3 className="feature-title">Industry Partnerships</h3>
-            <p className="feature-description">
-              Live briefs, guest studios and placement routes with quantity
-              surveying, contracting and planning practices.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 6 — UPCOMING EVENTS */}
+      {/* 5 — UPCOMING EVENTS */}
       <section className="home-band">
         <div className="container home-section">
           <div className="section-head">
@@ -244,7 +192,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 7 — MEET OUR STAFF */}
+      {/* 6 — MEET OUR STAFF */}
       <section className="container home-section">
         <div className="section-head">
           <h2 className="section-title">Meet Our Staff</h2>
@@ -270,75 +218,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 8 — STUDENT RESOURCES */}
-      <section className="home-band">
-        <div className="container home-section">
-          <div className="section-head">
-            <h2 className="section-title">Student Resources</h2>
-            <span className="section-note">Timetable &middot; Notices &middot; Internship &middot; Downloads</span>
-          </div>
-          <div className="features-grid resources-grid">
-            <div className="card feature-card">
-              <div className="feature-icon">
-                <BookOpen size={28} aria-hidden="true" />
-              </div>
-              <h3 className="feature-title">Timetable</h3>
-              <p className="feature-description">
-                Weekly lecture and studio schedules for every level, published
-                each semester by the department.
-              </p>
-            </div>
-            <div className="card feature-card">
-              <div className="feature-icon">
-                <Bell size={28} aria-hidden="true" />
-              </div>
-              <h3 className="feature-title">Latest Notices</h3>
-              {activeNotices.length > 0 ? (
-                <ul className="resource-list">
-                  {activeNotices.map((notice) => (
-                    <li key={notice.id}>
-                      <strong>{notice.title}</strong>
-                      <span>{formatDate(notice.date)}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="feature-description">No active notices right now.</p>
-              )}
-            </div>
-            <div className="card feature-card">
-              <div className="feature-icon">
-                <Briefcase size={28} aria-hidden="true" />
-              </div>
-              <h3 className="feature-title">Internship</h3>
-              <p className="feature-description">
-                Industrial attachment placements with partner firms, site
-                supervision guides and logbook requirements.
-              </p>
-            </div>
-            <div className="card feature-card">
-              <div className="feature-icon">
-                <Download size={28} aria-hidden="true" />
-              </div>
-              <h3 className="feature-title">Downloads</h3>
-              <p className="feature-description">
-                Handbooks, studio briefs, dissertation templates and
-                departmental forms in one place.
-              </p>
-              <p className="resource-files">
-                <span>
-                  <FileText size={14} aria-hidden="true" /> Student handbook (PDF)
-                </span>
-                <span>
-                  <FileText size={14} aria-hidden="true" /> Attachment logbook (PDF)
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 9 — GALLERY */}
+      {/* 7 — GALLERY */}
       <section className="container home-section">
         <div className="section-head">
           <h2 className="section-title">Gallery</h2>
@@ -363,7 +243,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 10 — CONTACT US */}
+      {/* 8 — CONTACT US */}
       <section className="home-band">
         <div className="container home-section contact-strip">
           <div>

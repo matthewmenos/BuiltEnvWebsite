@@ -1,4 +1,4 @@
-/* Home page: hero, sections, HOD, bands, resources, contact strip */
+/* Home page: hero, sections, HOD, bands, resources, contact strip — also shared feature cards (Research & Resources pages) */
 .home { display: block; }
 .home-section { padding-top: 40px; padding-bottom: 40px; }
 .container.home-section { padding-top: 40px; padding-bottom: 40px; }
@@ -49,6 +49,29 @@
 
 /* Resources */
 .resources-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+/* Feature cards (Research & Student Resources pages) */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.feature-card { display: flex; flex-direction: column; gap: 10px; }
+.feature-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; flex-shrink: 0;
+  border-radius: var(--radius);
+  background: var(--color-background-alt);
+  color: var(--color-primary);
+}
+.feature-title { font-size: 18px; color: var(--color-primary-dark); }
+.feature-description { font-size: 14px; line-height: 1.6; color: var(--color-text-light); }
+
+/* Research page CTA */
+.research-cta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-top: 28px; padding: 20px 24px;
+  border: 1px solid var(--color-border); border-radius: var(--radius);
+  background: var(--color-background-alt);
+}
+.research-cta p { font-weight: 600; }
+.research-cta .btn { display: inline-flex; align-items: center; gap: 8px; }
 .resource-list { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .resource-list li {
   display: flex; flex-direction: column; gap: 2px;

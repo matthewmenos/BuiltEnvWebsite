@@ -20,6 +20,8 @@ import Staff from './pages/Staff';
 import StaffDetail from './pages/StaffDetail';
 import Gallery from './pages/Gallery';
 import GalleryDetail from './pages/GalleryDetail';
+import Research from './pages/Research';
+import Resources from './pages/Resources';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -54,6 +56,8 @@ function App() {
             <Route path="events/:id" element={<EventDetail />} />
             <Route path="staff" element={<Staff />} />
             <Route path="staff/:id" element={<StaffDetail />} />
+            <Route path="research" element={<Research />} />
+            <Route path="resources" element={<Resources />} />
             <Route path="gallery" element={<Gallery />} />
             <Route path="gallery/:id" element={<GalleryDetail />} />
             <Route path="contact" element={<Contact />} />

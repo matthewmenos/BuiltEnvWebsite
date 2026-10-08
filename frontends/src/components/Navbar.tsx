@@ -5,9 +5,11 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { label: 'Home', path: '/' },
     { label: 'Programmes', path: '/programmes' },
+    { label: 'Research', path: '/research' },
     { label: 'News', path: '/news' },
     { label: 'Events', path: '/events' },
     { label: 'Staff', path: '/staff' },
+    { label: 'Resources', path: '/resources' },
     { label: 'Gallery', path: '/gallery' },
     { label: 'Contact', path: '/contact' },
   ];
