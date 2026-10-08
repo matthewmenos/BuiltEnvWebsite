@@ -34,6 +34,7 @@ import AdminGallery from './pages/AdminGallery';
 import AdminNotices from './pages/AdminNotices';
 import AdminContacts from './pages/AdminContacts';
 import AdminResourceForm from './pages/AdminResourceForm';
+import AdminHomeSlides from './pages/AdminHomeSlides';
 
 // Placeholder pages
 import Placeholder from './pages/Placeholder';
@@ -72,6 +73,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="home"
+              element={
+                <ProtectedRoute>
+                  <AdminHomeSlides />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="home/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="home-slides" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="home/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="home-slides" />
                 </ProtectedRoute>
               }
             />

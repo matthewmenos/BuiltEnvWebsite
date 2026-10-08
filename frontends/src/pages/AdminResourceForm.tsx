@@ -8,15 +8,22 @@ import { events as eventSeed } from '../data/events';
 import { galleryItems as gallerySeed } from '../data/gallery';
 import { Notice as noticeSeed } from '../data/notices';
 
-type ResourceKey = 'programmes' | 'news' | 'events' | 'gallery' | 'notices';
+type ResourceKey =
+  | 'programmes'
+  | 'news'
+  | 'events'
+  | 'gallery'
+  | 'notices'
+  | 'home-slides';
 
 interface Field {
   name: string;
   label: string;
-  type?: 'text' | 'textarea' | 'datetime-local';
+  type?: 'text' | 'textarea' | 'datetime-local' | 'select';
   required?: boolean;
   rows?: number;
   placeholder?: string;
+  options?: { value: string; label: string }[];
 }
 
 interface ResourceConfig {
@@ -158,6 +165,28 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       return { title: n.title, body: n.content, author: '', expiresAt: '' };
     },
   },
+  'home-slides': {
+    titleSingular: 'Homepage Slide',
+    listPath: '/admin/home',
+    description:
+      'Background images for the homepage hero carousel, displayed in order. Required fields are marked with *.',
+    fields: [
+      { name: 'imageUrl', label: 'Image URL *', required: true, placeholder: 'https://… or /assets/…' },
+      { name: 'altText', label: 'Alt text', placeholder: 'Describes the image (used by screen readers)' },
+      { name: 'sortOrder', label: 'Display order', placeholder: '0 = first, 1 = second, …' },
+      {
+        name: 'active',
+        label: 'Visibility',
+        type: 'select',
+        options: [
+          { value: 'true', label: 'Visible on the homepage' },
+          { value: 'false', label: 'Hidden' },
+        ],
+      },
+    ],
+    // Slides live only in the database — prefill comes from the API fallback.
+    findStatic: () => undefined,
+  },
 };
 
 const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) => {
@@ -168,7 +197,13 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   const { token } = useAuth();
 
   const emptyForm = (): Record<string, string> =>
-    Object.fromEntries(config.fields.map((f) => [f.name, '']));
+    Object.fromEntries(
+      config.fields.map((f) => [
+        f.name,
+        // Selects must start on a real option (e.g. slides default to Visible).
+        f.type === 'select' ? (f.options?.[0]?.value ?? '') : '',
+      ])
+    );
 
   const [form, setForm] = useState<Record<string, string>>(emptyForm);
   const [status, setStatus] = useState<'idle' | 'saving'>('idle');
@@ -227,7 +262,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   }, [resource, id]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -300,6 +335,26 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
                   required={f.required}
                   placeholder={f.placeholder}
                 />
+              </div>
+            );
+          }
+          if (f.type === 'select') {
+            return (
+              <div className="form-group" key={f.name}>
+                <label htmlFor={fieldId}>{f.label}</label>
+                <select
+                  id={fieldId}
+                  name={f.name}
+                  value={value}
+                  onChange={handleChange}
+                  required={f.required}
+                >
+                  {(f.options ?? []).map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             );
           }

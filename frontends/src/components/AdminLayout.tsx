@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
+  House,
   GraduationCap,
   Newspaper,
   CalendarDays,
@@ -15,6 +16,7 @@ import { useAuth } from '../context/ThemeContext';
 
 const adminLinks = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+  { label: 'Homepage', path: '/admin/home', icon: House },
   { label: 'Programmes', path: '/admin/programmes', icon: GraduationCap },
   { label: 'News', path: '/admin/news', icon: Newspaper },
   { label: 'Events', path: '/admin/events', icon: CalendarDays },

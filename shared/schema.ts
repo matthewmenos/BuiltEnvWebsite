@@ -229,3 +229,18 @@ export const contacts = pgTable('contacts', {
     .defaultNow()
     .notNull(),
 });
+
+/** Homepage hero background-carousel slides (admin-configurable). */
+export const homeSlides = pgTable('home_slides', {
+  id: text('id').primaryKey(),
+  imageUrl: text('image_url').notNull(),
+  altText: text('alt_text').notNull().default(''),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});

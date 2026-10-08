@@ -55,6 +55,13 @@
 .admin-form-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
 .admin-form-actions .btn { display: inline-flex; align-items: center; gap: 8px; }
 
+/* Homepage slide thumbnails */
+.slide-thumb {
+  width: 120px; height: 64px; object-fit: cover;
+  border-radius: 6px; border: 1px solid var(--color-border);
+  background: var(--color-background-alt);
+}
+
 @media (max-width: 640px) {
   .admin-form .form-grid { grid-template-columns: 1fr; }
 }
