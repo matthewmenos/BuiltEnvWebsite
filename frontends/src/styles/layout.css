@@ -28,6 +28,24 @@
 .navbar-actions { display: flex; gap: 8px; align-items: center; }
 .navbar-actions .btn { white-space: nowrap; }
 
+/* Mobile menu toggle (hidden on desktop) */
+.nav-toggle {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 42px; height: 42px; flex-shrink: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.nav-toggle:hover { background: var(--color-accent); color: var(--color-primary-dark); }
+.nav-toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* Menu wrapper: transparent on desktop (children become navbar flex items),
+   dropdown panel on mobile */
+.nav-menu { display: contents; }
+
 .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .footer-logo {
   width: 48px; height: 48px; object-fit: contain;
@@ -77,9 +95,34 @@
 
 @media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Mobile: hamburger + dropdown menu */
+  .navbar-inner { position: relative; flex-wrap: nowrap; }
+  .nav-toggle { display: inline-flex; }
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+    padding: 8px 20px 16px;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    z-index: 101;
+  }
+  .nav-menu.is-open { display: flex; flex-direction: column; gap: 4px; }
+  .nav-links { flex-direction: column; gap: 2px; width: 100%; }
+  .nav-links a { padding: 12px; font-size: 15px; }
+  .navbar-actions {
+    width: 100%; margin-top: 8px; padding-top: 14px;
+    border-top: 1px solid var(--color-border);
+  }
+  .navbar-actions .btn { display: block; width: 100%; text-align: center; }
 }
 @media (max-width: 640px) {
   .footer-grid { grid-template-columns: 1fr; }
   .navbar-inner { gap: 12px; }
+  .logo-text { white-space: normal; font-size: 14px; }
   .page-title { font-size: 26px; }
 }
