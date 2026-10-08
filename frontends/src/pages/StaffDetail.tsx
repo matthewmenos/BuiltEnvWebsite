@@ -31,6 +31,12 @@ const StaffDetail: React.FC = () => {
           <span className="badge badge-primary">{member.position}</span>
           <p className="staff-detail-department">{member.department}</p>
           <p className="staff-detail-bio">{member.bio}</p>
+          {member.welcomeMessage && (
+            <div className="staff-detail-welcome">
+              <h4>A Message from {member.name.split(' ').slice(-1)}</h4>
+              <blockquote>{member.welcomeMessage}</blockquote>
+            </div>
+          )}
           <div className="staff-detail-contact">
             <h4>Contact</h4>
             <p>

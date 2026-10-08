@@ -10,6 +10,8 @@ export const staff: IStaff[] = [
     phone: '+44 (0)117 331 2000',
     address: 'Built Environment Building, Room 101, University Walk, Bristol, BS8 1TR',
     bio: 'Michael Turner is a leading researcher in sustainable construction materials. He has published over 150 papers and leads the Materials Innovation research group. He holds a PhD in Civil Engineering from Imperial College London.',
+    welcomeMessage:
+      'Welcome to the Department of Built Environment at Pentecost University. Whether you are preparing for a career in quantity surveying, construction management, architecture or planning, you will learn from experienced academics, work on live industry briefs, and graduate ready to shape Ghana&apos;s built future.',
     image: '/assets/staff/turner.jpg',
   },
   {

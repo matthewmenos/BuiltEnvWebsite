@@ -13,8 +13,12 @@ export default function handler(
     buildValues: (body) => ({
       name: body.name,
       position: body.position,
+      department: body.department || 'Built Environment',
       email: body.email,
+      phone: body.phone || '',
+      address: body.address || '',
       bio: body.bio,
+      welcomeMessage: body.welcomeMessage ?? null,
       image: body.image,
       researchInterests: body.researchInterests || '[]',
     }),

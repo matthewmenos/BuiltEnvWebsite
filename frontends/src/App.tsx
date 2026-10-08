@@ -27,6 +27,7 @@ import AdminProgrammes from './pages/AdminProgrammes';
 import AdminNews from './pages/AdminNews';
 import AdminEvents from './pages/AdminEvents';
 import AdminStaff from './pages/AdminStaff';
+import AdminStaffForm from './pages/AdminStaffForm';
 import AdminGallery from './pages/AdminGallery';
 import AdminNotices from './pages/AdminNotices';
 import AdminContacts from './pages/AdminContacts';
@@ -98,6 +99,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminStaff />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="staff/new"
+              element={
+                <ProtectedRoute>
+                  <AdminStaffForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="staff/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminStaffForm />
                 </ProtectedRoute>
               }
             />

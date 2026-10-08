@@ -10,6 +10,19 @@
   font-size: 14px; font-weight: 600; text-transform: uppercase; color: var(--color-secondary);
 }
 .staff-detail-bio { margin: 12px 0; line-height: 1.7; }
+.staff-detail-welcome {
+  margin: 20px 0; padding: 20px;
+  background: var(--color-background-alt);
+  border-left: 4px solid var(--color-secondary);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.staff-detail-welcome h4 {
+  font-size: 15px; color: var(--color-primary-dark); margin-bottom: 10px;
+}
+.staff-detail-welcome blockquote {
+  font-style: italic; line-height: 1.7; color: var(--color-text);
+  margin: 0; white-space: pre-line;
+}
 .staff-detail-contact {
   background: var(--color-background-alt); border: 1px solid var(--color-border);
   border-radius: var(--radius); padding: 16px; margin-top: 16px;

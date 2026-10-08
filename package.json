@@ -6,6 +6,9 @@
   "scripts": {
     "build": "npm run build -w frontends",
     "dev:frontends": "npm run dev -w frontends",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
     "vercel": "vercel",
     "deploy": "vercel --prod",
     "deploy:ci": "vercel --prod --yes"

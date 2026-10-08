@@ -71,6 +71,7 @@ export interface IStaff {
   phone: string;
   address: string;
   bio: string;
+  welcomeMessage?: string;
   image: string;
 }
 
@@ -168,8 +169,12 @@ export const staff = pgTable('staff', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   position: text('position').notNull(),
+  department: text('department').notNull().default('Built Environment'),
   email: text('email').notNull().unique(),
+  phone: text('phone').notNull().default(''),
+  address: text('address').notNull().default(''),
   bio: text('bio').notNull(),
+  welcomeMessage: text('welcome_message'),
   image: text('image').notNull(),
   researchInterests: text('research_interests').notNull().default('[]'),
   createdAt: timestamp('created_at', { withTimezone: true })

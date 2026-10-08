@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { count } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import { getDb } from './db';
 import { generateId } from './auth';
 import {
@@ -24,8 +24,9 @@ export interface ResourceConfig {
 }
 
 /**
- * Shared GET (paginated list, public) + POST (create) handler for the
- * admin content resources. Fixes two bugs from the old api/src routes:
+ * Shared GET (paginated list, public) + POST (create) + PUT (update by id)
+ * + DELETE (remove by id) handler for the admin content resources.
+ * Fixes two bugs from the old api/src routes:
  * the broken `.select({ count: table.id.length })` count query (now uses
  * drizzle's `count()`) and the duplicated `rows` declaration.
  */
@@ -34,6 +35,16 @@ export async function handleResource(
   res: VercelResponse,
   config: ResourceConfig
 ): Promise<void> {
+  const getId = (): string | undefined => {
+    const q = req.query as Record<string, string | string[] | undefined>;
+    const fromQuery = Array.isArray(q.id) ? q.id[0] : q.id;
+    if (fromQuery) return fromQuery;
+    // Support /api/admin/staff/<id> style URLs as well.
+    const url = (req.url || '').split('?')[0] ?? '';
+    const last = url.split('/').filter(Boolean).pop();
+    if (last && last !== 'staff' && last !== 'admin' && last !== 'api') return last;
+    return undefined;
+  };
   try {
     if (req.method === 'OPTIONS') {
       sendJson(res, 200, {});
@@ -81,6 +92,48 @@ export async function handleResource(
         .values({ id: generateId(), ...config.buildValues(body, req) })
         .returning();
       sendJson(res, 201, { item });
+      return;
+    }
+
+    if (req.method === 'PUT') {
+      requireAuth(req);
+      const id = getId();
+      if (!id) {
+        sendJson(res, 400, { error: 'Missing id' });
+        return;
+      }
+      const body = await readJsonBody<Record<string, any>>(req);
+      const db: any = getDb();
+      const [item] = await db
+        .update(config.table)
+        .set({ ...config.buildValues(body, req), updatedAt: new Date() })
+        .where(eq(config.table.id, id))
+        .returning();
+      if (!item) {
+        sendJson(res, 404, { error: 'Not found' });
+        return;
+      }
+      sendJson(res, 200, { item });
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      requireAuth(req);
+      const id = getId();
+      if (!id) {
+        sendJson(res, 400, { error: 'Missing id' });
+        return;
+      }
+      const db: any = getDb();
+      const [item] = await db
+        .delete(config.table)
+        .where(eq(config.table.id, id))
+        .returning();
+      if (!item) {
+        sendJson(res, 404, { error: 'Not found' });
+        return;
+      }
+      sendJson(res, 200, { item });
       return;
     }
 

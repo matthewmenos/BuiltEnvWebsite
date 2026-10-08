@@ -45,3 +45,16 @@
 .btn-delete:hover { background: var(--color-error); color: #ffffff; }
 .quick-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .text-muted { color: var(--color-text-light); font-size: 14px; }
+
+/* Admin forms */
+.admin-form { max-width: 860px; }
+.admin-form .form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px;
+}
+.admin-form textarea { resize: vertical; min-height: 90px; }
+.admin-form-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.admin-form-actions .btn { display: inline-flex; align-items: center; gap: 8px; }
+
+@media (max-width: 640px) {
+  .admin-form .form-grid { grid-template-columns: 1fr; }
+}
