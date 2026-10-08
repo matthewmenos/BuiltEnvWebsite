@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 import { IEvent } from 'shared/schema';
 import { events as eventsData } from '../data/events';
 
@@ -30,9 +31,11 @@ const EventDetail: React.FC = () => {
         <div className="event-detail-content">
           <div className="event-detail-meta">
             <span className="badge badge-primary">{event.category}</span>
-            <span className="event-location">📍 {event.location}</span>
-            <span className="event-date">
-              📅{' '}
+            <span className="event-location meta-item">
+              <MapPin size={14} aria-hidden="true" /> {event.location}
+            </span>
+            <span className="event-date meta-item">
+              <Calendar size={14} aria-hidden="true" />{' '}
               {new Date(event.startTime).toLocaleDateString('en-GB', {
                 weekday: 'long',
                 day: 'numeric',
@@ -40,11 +43,13 @@ const EventDetail: React.FC = () => {
                 year: 'numeric',
               })}
             </span>
-            <span className="event-time">
-              🕒 {new Date(event.startTime).toLocaleTimeString('en-GB', {
+            <span className="event-time meta-item">
+              <Clock size={14} aria-hidden="true" />{' '}
+              {new Date(event.startTime).toLocaleTimeString('en-GB', {
                 hour: '2-digit',
                 minute: '2-digit',
-              })} -{' '}
+              })}{' '}
+              -{' '}
               {new Date(event.endTime).toLocaleTimeString('en-GB', {
                 hour: '2-digit',
                 minute: '2-digit',

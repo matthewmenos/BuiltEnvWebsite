@@ -1,0 +1,16 @@
+/* Event detail */
+.event-detail {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;
+}
+.event-detail-image img {
+  width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.event-detail-content { min-width: 0; }
+.event-detail-meta {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px;
+}
+.event-detail-actions { margin-top: 24px; }
+
+@media (max-width: 900px) {
+  .event-detail { grid-template-columns: 1fr; }
+}

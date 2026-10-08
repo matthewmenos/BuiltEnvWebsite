@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Calendar, MapPin } from 'lucide-react';
 import { programmes as programmesData } from '../data/programmes';
 import { IBreadcrumb, IProgramme } from 'shared/schema';
 
@@ -48,8 +49,12 @@ const Programmes: React.FC = () => {
               <p className="programme-faculty">Faculty of {programme.faculty}</p>
               <p className="programme-description">{programme.description}</p>
               <div className="programme-meta">
-                <span>📅 {programme.duration}</span>
-                <span>📍 {programme.location}</span>
+                <span className="meta-item">
+                  <Calendar size={14} aria-hidden="true" /> {programme.duration}
+                </span>
+                <span className="meta-item">
+                  <MapPin size={14} aria-hidden="true" /> {programme.location}
+                </span>
               </div>
               <div className="programme-actions">
                 <Link to={`/programmes/${programme.id}`} className="btn btn-sm btn-primary">

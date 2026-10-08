@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Calendar, MapPin } from 'lucide-react';
 import { IEvent } from 'shared/schema';
 import { events as eventsData } from '../data/events';
 
@@ -20,9 +21,11 @@ const Events: React.FC = () => {
             <div className="event-content">
               <span className="badge badge-primary">{event.category}</span>
               <h3 className="event-title">{event.title}</h3>
-              <p className="event-location">📍 {event.location}</p>
-              <p className="event-date">
-                📅{' '}
+              <p className="event-location meta-item">
+                <MapPin size={14} aria-hidden="true" /> {event.location}
+              </p>
+              <p className="event-date meta-item">
+                <Calendar size={14} aria-hidden="true" />{' '}
                 {new Date(event.startTime).toLocaleDateString('en-GB', {
                   day: 'numeric',
                   month: 'long',

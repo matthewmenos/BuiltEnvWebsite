@@ -1,0 +1,15 @@
+/* Contact */
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: start;
+}
+.contact-info { display: flex; flex-direction: column; gap: 20px; }
+.contact-form-container form h2 { font-size: 20px; margin-bottom: 8px; color: var(--color-primary-dark); }
+.contact-item { display: flex; gap: 12px; margin-top: 16px; }
+.contact-icon { font-size: 22px; }
+.map-wrapper iframe { width: 100%; height: 260px; border: 0; border-radius: var(--radius); margin-top: 12px; }
+.form-success { color: var(--color-success); margin-top: 12px; font-weight: 600; }
+.form-error { color: var(--color-error); margin-top: 12px; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .contact-grid { grid-template-columns: 1fr; }
+}

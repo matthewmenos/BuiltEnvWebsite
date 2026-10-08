@@ -1,0 +1,13 @@
+/* Gallery detail */
+.gallery-detail {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;
+}
+.gallery-detail-image img {
+  width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.gallery-detail-content { min-width: 0; }
+.gallery-detail-actions { margin-top: 24px; }
+
+@media (max-width: 900px) {
+  .gallery-detail { grid-template-columns: 1fr; }
+}

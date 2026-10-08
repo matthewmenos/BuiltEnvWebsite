@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/ThemeContext';
 
 const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -8,7 +8,7 @@ const AdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login } = useTheme();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +47,11 @@ const AdminLogin: React.FC = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <span className="logo-icon">🏛️</span>
+          <img
+            src="/assets/logos/department-logo.jpg"
+            alt="Department of Built Environment logo"
+            className="login-logo-img"
+          />
           <span className="logo-text">Department of Built Environment</span>
         </div>
         <h1 className="login-title">Admin Login</h1>

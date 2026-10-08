@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -7,10 +8,23 @@ const Footer: React.FC = () => {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-col">
-            <h4>Department of Built Environment</h4>
+            <div className="footer-brand">
+              <img
+                src="/assets/logos/pu-logo.jpg"
+                alt="Pentecost University logo"
+                className="footer-logo"
+              />
+              <h4>Department of Built Environment</h4>
+            </div>
             <p>
+              A department of Pentecost University, Sowutuom – Accra, Ghana.
               Building the future of the built environment through
               innovative education, research, and practice.
+            </p>
+            <p className="footer-parent">
+              <a href="https://pentvars.edu.gh" target="_blank" rel="noreferrer">
+                pentvars.edu.gh
+              </a>
             </p>
           </div>
           <div className="footer-col">
@@ -25,18 +39,23 @@ const Footer: React.FC = () => {
           <div className="footer-col">
             <h4>Contact</h4>
             <ul>
-              <li>
-                <a href="mailto:info@builtenv.ac.uk">info@builtenv.ac.uk</a>
+              <li className="footer-contact-item">
+                <Mail size={16} aria-hidden="true" />
+                <a href="mailto:info@pentvars.edu.gh">info@pentvars.edu.gh</a>
               </li>
-              <li>
-                <a href="tel:+441234567890">+44 (0)123 456 7890</a>
+              <li className="footer-contact-item">
+                <Phone size={16} aria-hidden="true" />
+                <a href="tel:+233302417064">+233 302 417 064</a>
               </li>
-              <li>Built Environment Building, University Walk, Bristol, BS8 1TR</li>
+              <li className="footer-contact-item">
+                <MapPin size={16} aria-hidden="true" />
+                <span>Pentecost University, P.O. Box KN 1739, Accra, Ghana</span>
+              </li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Department of Built Environment. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Department of Built Environment, Pentecost University. All rights reserved.</p>
         </div>
       </div>
     </footer>

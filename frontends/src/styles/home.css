@@ -1,0 +1,47 @@
+/* Home page: hero, features, highlights, stats */
+.hero {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 70%);
+  color: #ffffff; padding: 72px 0; margin-bottom: 48px;
+}
+.hero-content { max-width: 720px; }
+.hero-title { font-size: 44px; line-height: 1.15; font-family: var(--font-serif); margin-bottom: 16px; }
+.hero-subtitle { font-size: 18px; color: #d7e9f1; margin-bottom: 28px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero .btn-outline { border-color: #ffffff; color: #ffffff; }
+.hero .btn-outline:hover { background: #ffffff; color: var(--color-primary-dark); }
+
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px; margin-bottom: 48px;
+}
+.feature-card { text-align: left; }
+.feature-icon { font-size: 32px; margin-bottom: 12px; }
+.feature-title { font-size: 18px; margin-bottom: 8px; color: var(--color-primary-dark); }
+.feature-description { font-size: 14px; color: var(--color-text-light); }
+.highlights {
+  background: var(--color-background-alt);
+  border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
+  padding: 40px 0; margin-bottom: 48px;
+}
+.highlights-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px; text-align: center;
+}
+.highlight-card { padding: 16px; }
+.highlight-icon { font-size: 28px; margin-bottom: 8px; }
+.highlight-value { font-size: 18px; font-weight: 700; color: var(--color-primary-dark); }
+.highlight-label { font-size: 13px; color: var(--color-text-light); text-transform: uppercase; }
+.stats { padding-bottom: 48px; }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;
+}
+.stat-card { text-align: center; }
+.stat-value { font-size: 32px; font-weight: 800; color: var(--color-primary); }
+.stat-label { font-size: 14px; color: var(--color-text-light); }
+
+@media (max-width: 900px) {
+  .hero-title { font-size: 34px; }
+}
+@media (max-width: 640px) {
+  .hero { padding: 48px 0; }
+}

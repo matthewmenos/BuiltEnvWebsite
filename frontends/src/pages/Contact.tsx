@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -38,31 +39,39 @@ const Contact: React.FC = () => {
           <div className="card">
             <h2>Visit Us</h2>
             <div className="contact-item">
-              <span className="contact-icon">📍</span>
+              <span className="contact-icon">
+                <MapPin size={22} aria-hidden="true" />
+              </span>
               <div>
                 <strong>Address:</strong>
-                <p>Built Environment Building, University Walk, Bristol, BS8 1TR</p>
+                <p>Department of Built Environment, Pentecost University, Sowutuom, Accra, Ghana</p>
               </div>
             </div>
             <div className="contact-item">
-              <span className="contact-icon">📞</span>
+              <span className="contact-icon">
+                <Phone size={22} aria-hidden="true" />
+              </span>
               <div>
                 <strong>Telephone:</strong>
-                <p>+44 (0)117 331 2000</p>
+                <p>+233 302 417 064</p>
               </div>
             </div>
             <div className="contact-item">
-              <span className="contact-icon">✉️</span>
+              <span className="contact-icon">
+                <Mail size={22} aria-hidden="true" />
+              </span>
               <div>
                 <strong>Email:</strong>
-                <p>info@builtenv.ac.uk</p>
+                <p>info@pentvars.edu.gh</p>
               </div>
             </div>
             <div className="contact-item">
-              <span className="contact-icon">🕐</span>
+              <span className="contact-icon">
+                <Clock size={22} aria-hidden="true" />
+              </span>
               <div>
                 <strong>Office Hours:</strong>
-                <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
+                <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
               </div>
             </div>
           </div>
@@ -72,7 +81,7 @@ const Contact: React.FC = () => {
             <div className="map-wrapper">
               <iframe
                 title="Department location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3370.451899585166!2d-2.593246184726376!3d51.45567937967245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTFCMDAxJzIxLjgiTcKwNzE!5e0!3m2!1sen!2suk!4v1690000000000"
+                src="https://www.google.com/maps?q=Pentecost+University+Sowutuom+Accra+Ghana&output=embed"
                 allowFullScreen
                 loading="lazy"
               />

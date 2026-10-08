@@ -1,23 +1,24 @@
 import React from 'react';
+import { Target, Microscope, Handshake, Leaf, BadgeCheck, GraduationCap, Rocket } from 'lucide-react';
 
 const features = [
   {
-    icon: '🎯',
+    icon: Target,
     title: 'Innovative Programmes',
     description: 'Industry-aligned degrees that prepare you for the challenges of the built environment.',
   },
   {
-    icon: '🔬',
+    icon: Microscope,
     title: 'Research Excellence',
     description: 'Pioneering research that shapes sustainable urban development and construction.',
   },
   {
-    icon: '🤝',
+    icon: Handshake,
     title: 'Industry Partnerships',
     description: 'Work placements, guest lectures, and collaboration with leading built environment firms.',
   },
   {
-    icon: '🌱',
+    icon: Leaf,
     title: 'Sustainability Focus',
     description: 'Designing for a greener future with net-zero carbon buildings and communities.',
   },
@@ -27,17 +28,17 @@ const highlights = [
   {
     label: 'Accreditation',
     value: 'RICS & CIBSE accredited',
-    icon: '✅',
+    icon: BadgeCheck,
   },
   {
     label: 'Student Body',
     value: '1,200+ undergraduates',
-    icon: '🎓',
+    icon: GraduationCap,
   },
   {
     label: 'Employability',
     value: '95% employed within 6 months',
-    icon: '🚀',
+    icon: Rocket,
   },
 ];
 
@@ -77,13 +78,18 @@ const Home: React.FC = () => {
       {/* Features */}
       <section className="container">
         <div className="features-grid">
-          {features.map((feature) => (
-            <div className="card feature-card" key={feature.title}>
-              <div className="feature-icon">{feature.icon}</div>
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
-            </div>
-          ))}
+          {features.map((feature) => {
+            const FeatureIcon = feature.icon;
+            return (
+              <div className="card feature-card" key={feature.title}>
+                <div className="feature-icon">
+                  <FeatureIcon size={32} aria-hidden="true" />
+                </div>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-description">{feature.description}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -91,13 +97,18 @@ const Home: React.FC = () => {
       <section className="highlights">
         <div className="container">
           <div className="highlights-grid">
-            {highlights.map((h) => (
-              <div className="highlight-card" key={h.label}>
-                <div className="highlight-icon">{h.icon}</div>
-                <div className="highlight-value">{h.value}</div>
-                <div className="highlight-label">{h.label}</div>
-              </div>
-            ))}
+            {highlights.map((h) => {
+              const HighlightIcon = h.icon;
+              return (
+                <div className="highlight-card" key={h.label}>
+                  <div className="highlight-icon">
+                    <HighlightIcon size={28} aria-hidden="true" />
+                  </div>
+                  <div className="highlight-value">{h.value}</div>
+                  <div className="highlight-label">{h.label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

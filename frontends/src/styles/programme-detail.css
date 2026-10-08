@@ -1,0 +1,25 @@
+/* Programme detail */
+.programme-detail {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;
+}
+.programme-detail-image img {
+  width: 100%; border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.programme-detail-title {
+  font-size: 30px; font-family: var(--font-serif);
+  color: var(--color-primary-dark); margin: 12px 0 4px;
+}
+.programme-detail-faculty {
+  font-size: 14px; font-weight: 600; text-transform: uppercase; color: var(--color-secondary);
+}
+.programme-detail-section {
+  margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--color-border);
+}
+.programme-detail-section h2 { font-size: 18px; color: var(--color-primary); margin-bottom: 8px; }
+.fee-label { font-weight: 700; }
+.programme-detail-body, .programme-detail-content, .programme-detail-header { min-width: 0; }
+.programme-detail-footer { margin-top: 24px; }
+
+@media (max-width: 900px) {
+  .programme-detail { grid-template-columns: 1fr; }
+}

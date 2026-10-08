@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useTheme } from './context/ThemeContext';
+import { useAuth } from './context/ThemeContext';
 
 // Layout components
 import Layout from './components/Layout';
@@ -35,7 +35,7 @@ import AdminContacts from './pages/AdminContacts';
 import Placeholder from './pages/Placeholder';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useTheme();
+  const { isAuthenticated } = useAuth();
   return isAuthenticated ? <>{children}</> : <Navigate to="/admin/login" replace />;
 };
 

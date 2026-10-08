@@ -1,0 +1,11 @@
+/* News article */
+.news-article { max-width: 800px; margin: 0 auto 32px; }
+.news-article-header { min-width: 0; }
+.news-article-title {
+  font-size: 34px; font-family: var(--font-serif);
+  color: var(--color-primary-dark); margin: 12px 0 20px;
+}
+.news-article-meta { display: flex; gap: 16px; font-size: 14px; color: var(--color-text-light); }
+.news-article-image img { width: 100%; border-radius: var(--radius); margin-bottom: 24px; }
+.news-article-body { line-height: 1.8; font-size: 17px; }
+.news-article-footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-border); }

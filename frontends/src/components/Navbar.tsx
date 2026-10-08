@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
 
 const Navbar: React.FC = () => {
-  const { theme, toggleTheme, isAuthenticated, logout } = useTheme();
-
   const navLinks = [
     { label: 'Home', path: '/' },
     { label: 'Programmes', path: '/programmes' },
@@ -19,8 +16,15 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="container navbar-inner">
         <Link to="/" className="logo">
-          <span className="logo-icon">🏛️</span>
-          <span className="logo-text">Department of Built Environment</span>
+          <img
+            src="/assets/logos/department-logo.jpg"
+            alt="Department of Built Environment logo"
+            className="logo-img"
+          />
+          <span className="logo-text-block">
+            <span className="logo-text">Department of Built Environment</span>
+            <span className="logo-subtext">Pentecost University</span>
+          </span>
         </Link>
         <ul className="nav-links">
           {navLinks.map((link) => (
@@ -30,18 +34,14 @@ const Navbar: React.FC = () => {
           ))}
         </ul>
         <div className="navbar-actions">
-          {isAuthenticated ? (
-            <button className="btn btn-sm" onClick={logout}>
-              Logout
-            </button>
-          ) : (
-            <Link to="/admin/login" className="btn btn-sm btn-outline">
-              Admin Login
-            </Link>
-          )}
-          <button className="btn btn-sm btn-outline" onClick={toggleTheme}>
-            {theme === 'light' ? 'Dark' : 'Light'}
-          </button>
+          <a
+            href="https://pentvars.edu.gh"
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-sm btn-outline"
+          >
+            Pentecost University
+          </a>
         </div>
       </div>
     </nav>

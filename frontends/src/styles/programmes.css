@@ -1,0 +1,25 @@
+/* Programmes listing */
+.programmes-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
+}
+.programme-card {
+  display: flex; flex-direction: column; overflow: hidden; padding: 0; color: inherit;
+}
+.programme-image img {
+  width: 100%; height: 180px; object-fit: cover;
+}
+.programme-content {
+  display: flex; flex-direction: column; gap: 8px; padding: 20px; flex: 1;
+}
+.programme-title {
+  font-size: 19px; color: var(--color-primary-dark);
+}
+.programme-faculty {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--color-secondary);
+}
+.programme-description {
+  font-size: 14px; color: var(--color-text-light); flex: 1;
+}
+.programme-meta { display: flex; gap: 16px; font-size: 13px; color: var(--color-text-light); }
+.programme-actions { margin-top: 8px; }
