@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   GraduationCap,
@@ -25,35 +25,45 @@ const adminLinks = [
 ];
 
 const AdminLayout: React.FC = () => {
-  const { logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/admin/login', { replace: true });
+  };
 
   return (
     <div>
-      <div className="admin-nav">
-        <div className="admin-nav-brand">
-          <img
-            src="/assets/logos/department-logo.jpg"
-            alt="Department of Built Environment logo"
-            className="admin-logo-img"
-          />
-          <span className="admin-logo-text">Admin Panel</span>
+      {/* Hide the admin chrome on the login page — visitors without a
+          session should only see the login card. */}
+      {isAuthenticated && (
+        <div className="admin-nav">
+          <div className="admin-nav-brand">
+            <img
+              src="/assets/logos/department-logo.jpg"
+              alt="Department of Built Environment logo"
+              className="admin-logo-img"
+            />
+            <span className="admin-logo-text">Admin Panel</span>
+          </div>
+          <nav className="admin-nav-links">
+            {adminLinks.map((link) => {
+              const LinkIcon = link.icon;
+              return (
+                <Link key={link.path} to={link.path}>
+                  <LinkIcon size={15} aria-hidden="true" />
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+            <button className="admin-logout" onClick={handleLogout}>
+              <LogOut size={15} aria-hidden="true" />
+              <span>Logout</span>
+            </button>
+          </nav>
         </div>
-        <nav className="admin-nav-links">
-          {adminLinks.map((link) => {
-            const LinkIcon = link.icon;
-            return (
-              <Link key={link.path} to={link.path}>
-                <LinkIcon size={15} aria-hidden="true" />
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
-          <button className="admin-logout" onClick={logout}>
-            <LogOut size={15} aria-hidden="true" />
-            <span>Logout</span>
-          </button>
-        </nav>
-      </div>
+      )}
       <main className="admin-main">
         <Outlet />
       </main>

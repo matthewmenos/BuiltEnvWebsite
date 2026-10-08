@@ -73,7 +73,7 @@ const Home: React.FC = () => {
       {/* 2 — WELCOME FROM THE HEAD OF DEPARTMENT */}
       <section className="container home-section">
         <div className="section-head">
-          <h2 className="section-title">Welcome from the Head of Department</h2>
+          <h2 className="section-title">Welcome message from the Head of Department</h2>
           <Link to="/staff" className="section-link">
             Meet our staff <ArrowRight size={14} aria-hidden="true" />
           </Link>

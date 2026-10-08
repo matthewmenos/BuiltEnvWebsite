@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/ThemeContext';
 
 const AdminLogin: React.FC = () => {
@@ -8,7 +8,7 @@ const AdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,25 +23,48 @@ const AdminLogin: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      // The API normally returns JSON, but proxies/load balancers can answer
+      // with an HTML error page — don't blow up on response.json().
+      let data: {
+        token?: string;
+        user?: { email?: string };
+        error?: string;
+      } | null = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(
+          data?.error || `Login failed (HTTP ${response.status}). Please try again.`
+        );
       }
 
       // API returns { token, user: { email } } — persist the JWT so admin
       // API calls can send `Authorization: Bearer <token>`.
-      if (!data.token || !data.user?.email) {
+      if (!data?.token || !data.user?.email) {
         throw new Error('Login failed: malformed response');
       }
       login(data.user.email, data.token);
-      navigate('/admin/dashboard');
+      navigate('/admin/dashboard', { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      if (err instanceof TypeError) {
+        // fetch() network failure (API unreachable, dev proxy not running).
+        setError('Could not reach the server. Please check your connection and try again.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Login failed');
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  // Already signed in — send the admin straight to the dashboard.
+  if (isAuthenticated) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
   return (
     <div className="login-page">
