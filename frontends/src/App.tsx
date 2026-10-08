@@ -33,6 +33,7 @@ import AdminStaffForm from './pages/AdminStaffForm';
 import AdminGallery from './pages/AdminGallery';
 import AdminNotices from './pages/AdminNotices';
 import AdminContacts from './pages/AdminContacts';
+import AdminResourceForm from './pages/AdminResourceForm';
 
 // Placeholder pages
 import Placeholder from './pages/Placeholder';
@@ -83,6 +84,22 @@ function App() {
               }
             />
             <Route
+              path="programmes/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="programmes" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="programmes/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="programmes" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="news"
               element={
                 <ProtectedRoute>
@@ -91,10 +108,42 @@ function App() {
               }
             />
             <Route
+              path="news/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="news" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="news/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="news" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="events"
               element={
                 <ProtectedRoute>
                   <AdminEvents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="events/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="events" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="events/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="events" />
                 </ProtectedRoute>
               }
             />
@@ -131,10 +180,42 @@ function App() {
               }
             />
             <Route
+              path="gallery/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="gallery" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="gallery/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="gallery" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="notices"
               element={
                 <ProtectedRoute>
                   <AdminNotices />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="notices/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="notices" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="notices/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="notices" />
                 </ProtectedRoute>
               }
             />
