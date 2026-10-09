@@ -39,11 +39,16 @@ export async function handleResource(
     const q = req.query as Record<string, string | string[] | undefined>;
     const fromQuery = Array.isArray(q.id) ? q.id[0] : q.id;
     if (fromQuery) return fromQuery;
-    // Support /api/admin/staff/<id> style URLs as well.
+    // Support /api/admin/<resource>/<id> style URLs (incl. the [...all]
+    // catch-all router): the id is the last path segment, and the segment
+    // before it is the resource name.
     const url = (req.url || '').split('?')[0] ?? '';
-    const last = url.split('/').filter(Boolean).pop();
-    if (last && last !== 'staff' && last !== 'admin' && last !== 'api') return last;
-    return undefined;
+    const segs = url.split('/').filter(Boolean);
+    const last = segs[segs.length - 1];
+    if (!last || last === 'api' || last === 'admin') return undefined;
+    const prev = segs[segs.length - 2];
+    if (prev === 'admin') return undefined; // /api/admin/<resource> — no id
+    return last;
   };
   try {
     if (req.method === 'OPTIONS') {
