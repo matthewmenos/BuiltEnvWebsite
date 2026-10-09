@@ -19,3 +19,12 @@
 }
 .login-form .btn { width: 100%; }
 .login-help { margin-top: 16px; font-size: 13px; color: var(--color-text-light); text-align: center; }
+
+@media (max-width: 640px) {
+  .login-page { padding: 32px 16px; }
+  .login-card { padding: 28px 22px; }
+  .login-logo { gap: 8px; flex-wrap: wrap; }
+  .login-logos { gap: 6px; }
+  .login-logo-img { width: 36px; height: 36px; }
+  .login-logo .logo-text { font-size: 15px; line-height: 1.3; }
+}

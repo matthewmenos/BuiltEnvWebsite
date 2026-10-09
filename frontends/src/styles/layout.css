@@ -125,6 +125,19 @@
 @media (max-width: 640px) {
   .footer-grid { grid-template-columns: 1fr; }
   .navbar-inner { gap: 12px; }
-  .logo-text { white-space: normal; font-size: 14px; }
+  .logo { gap: 8px; min-width: 0; }
+  .logo-imgs { gap: 6px; }
+  .logo-img { width: 32px; height: 32px; border-radius: 5px; }
+  .logo-text-block { min-width: 0; flex: 1; }
+  .logo-text { white-space: normal; font-size: 14px; line-height: 1.2; overflow-wrap: break-word; }
+  .logo-subtext { font-size: 11px; }
+  .footer-logos { gap: 6px; }
+  .footer-logo { width: 36px; height: 36px; }
+  .footer-brand { flex-wrap: wrap; }
   .page-title { font-size: 26px; }
+}
+@media (max-width: 400px) {
+  .logo-img { width: 28px; height: 28px; }
+  .logo-text { font-size: 13px; }
+  .footer-logo { width: 32px; height: 32px; }
 }
