@@ -18,6 +18,7 @@
   margin-right: auto;
 }
 .logo:hover { color: var(--color-primary); }
+.logo-imgs { display: inline-flex; align-items: center; gap: 8px; }
 .logo-img {
   width: 44px; height: 44px; object-fit: contain;
   border-radius: 6px; background: #ffffff; flex-shrink: 0;
@@ -47,6 +48,7 @@
 .nav-menu { display: contents; }
 
 .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.footer-logos { display: inline-flex; align-items: center; gap: 8px; }
 .footer-logo {
   width: 48px; height: 48px; object-fit: contain;
   border-radius: 6px; background: #ffffff; flex-shrink: 0;

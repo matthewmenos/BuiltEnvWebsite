@@ -12,6 +12,7 @@ import {
   MailOpen,
   LogOut,
 } from 'lucide-react';
+import DualLogos from './DualLogos';
 import { useAuth } from '../context/ThemeContext';
 
 const adminLinks = [
@@ -43,15 +44,12 @@ const AdminLayout: React.FC = () => {
         <div className="admin-nav">
           <div className="admin-nav-brand">
             <div className="admin-nav-logos">
-              <img
-                src="/assets/logos/pu-logo.jpg"
-                alt="PU logo"
-                className="admin-logo-img admin-logo-img--pu"
-              />
-              <img
-                src="/assets/logos/department-logo.jpg"
-                alt="Department logo"
-                className="admin-logo-img admin-logo-img--department"
+              <DualLogos
+                imgClassName="admin-logo-img"
+                puClassName="admin-logo-img--pu"
+                departmentClassName="admin-logo-img--department"
+                puAlt="PU logo"
+                departmentAlt="Department logo"
               />
             </div>
             <span className="admin-logo-text">Admin Panel</span>

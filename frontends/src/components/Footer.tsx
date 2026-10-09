@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import DualLogos from './DualLogos';
 
 const Footer: React.FC = () => {
   return (
@@ -9,11 +10,9 @@ const Footer: React.FC = () => {
         <div className="footer-grid">
           <div className="footer-col">
             <div className="footer-brand">
-              <img
-                src="/assets/logos/pu-logo.jpg"
-                alt="Pentecost University logo"
-                className="footer-logo"
-              />
+              <span className="footer-logos">
+                <DualLogos imgClassName="footer-logo" puAlt="PU logo" departmentAlt="Department logo" />
+              </span>
               <h4>Department of Built Environment</h4>
             </div>
             <p>

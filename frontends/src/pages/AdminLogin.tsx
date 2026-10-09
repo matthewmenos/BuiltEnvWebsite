@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/ThemeContext';
+import DualLogos from '../components/DualLogos';
 
 const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -70,11 +71,13 @@ const AdminLogin: React.FC = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <img
-            src="/assets/logos/department-logo.jpg"
-            alt="Department of Built Environment logo"
-            className="login-logo-img"
-          />
+          <span className="login-logos">
+            <DualLogos
+              imgClassName="login-logo-img"
+              puAlt="PU logo"
+              departmentAlt="Department of Built Environment logo"
+            />
+          </span>
           <span className="logo-text">Department of Built Environment</span>
         </div>
         <h1 className="login-title">Admin Login</h1>

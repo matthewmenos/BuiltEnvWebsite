@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import DualLogos from './DualLogos';
 
 const Navbar: React.FC = () => {
   const navLinks = [
@@ -51,11 +52,9 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="container navbar-inner" ref={navbarRef}>
         <Link to="/" className="logo" onClick={closeMenu}>
-          <img
-            src="/assets/logos/department-logo.jpg"
-            alt="Department of Built Environment logo"
-            className="logo-img"
-          />
+          <span className="logo-imgs">
+            <DualLogos imgClassName="logo-img" puAlt="PU logo" />
+          </span>
           <span className="logo-text-block">
             <span className="logo-text">Department of Built Environment</span>
             <span className="logo-subtext">Pentecost University</span>
