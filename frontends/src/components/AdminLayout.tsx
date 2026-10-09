@@ -42,11 +42,18 @@ const AdminLayout: React.FC = () => {
       {isAuthenticated && (
         <div className="admin-nav">
           <div className="admin-nav-brand">
-            <img
-              src="/assets/logos/department-logo.jpg"
-              alt="Department of Built Environment logo"
-              className="admin-logo-img"
-            />
+            <div className="admin-nav-logos">
+              <img
+                src="/assets/logos/pu-logo.jpg"
+                alt="PU logo"
+                className="admin-logo-img admin-logo-img--pu"
+              />
+              <img
+                src="/assets/logos/department-logo.jpg"
+                alt="Department logo"
+                className="admin-logo-img admin-logo-img--department"
+              />
+            </div>
             <span className="admin-logo-text">Admin Panel</span>
           </div>
           <nav className="admin-nav-links">

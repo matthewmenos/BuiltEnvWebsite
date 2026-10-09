@@ -7,6 +7,7 @@ import { news as newsSeed } from '../data/news';
 import { events as eventSeed } from '../data/events';
 import { galleryItems as gallerySeed } from '../data/gallery';
 import { Notice as noticeSeed } from '../data/notices';
+import ImageUpload from '../components/ImageUpload';
 
 type ResourceKey =
   | 'programmes'
@@ -19,7 +20,7 @@ type ResourceKey =
 interface Field {
   name: string;
   label: string;
-  type?: 'text' | 'textarea' | 'datetime-local' | 'select';
+  type?: 'text' | 'textarea' | 'datetime-local' | 'select' | 'image';
   required?: boolean;
   rows?: number;
   placeholder?: string;
@@ -88,7 +89,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       { name: 'title', label: 'Title *', required: true },
       { name: 'author', label: 'Author *', required: true, placeholder: 'e.g. Dr. Sarah Thompson' },
       { name: 'category', label: 'Category *', required: true, placeholder: 'e.g. Research' },
-      { name: 'image', label: 'Image URL', placeholder: '/assets/news/…' },
+      { name: 'image', label: 'Featured image', type: 'image' },
       { name: 'summary', label: 'Summary *', type: 'textarea', rows: 2, required: true },
       { name: 'body', label: 'Body *', type: 'textarea', rows: 8, required: true },
     ],
@@ -115,7 +116,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       { name: 'startTime', label: 'Starts *', type: 'datetime-local', required: true },
       { name: 'endTime', label: 'Ends *', type: 'datetime-local', required: true },
       { name: 'category', label: 'Category', placeholder: 'e.g. Conference' },
-      { name: 'image', label: 'Image URL', placeholder: '/assets/events/…' },
+      { name: 'image', label: 'Featured image', type: 'image' },
       { name: 'description', label: 'Description *', type: 'textarea', rows: 5, required: true },
     ],
     findStatic: (id) => {
@@ -135,10 +136,10 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
   gallery: {
     titleSingular: 'Gallery Image',
     listPath: '/admin/gallery',
-    description: 'Gallery images appear in the public Gallery. Paste a direct image URL. Required fields are marked with *.',
+    description: 'Gallery images appear in the public Gallery. Upload an image file. Required fields are marked with *.',
     fields: [
       { name: 'title', label: 'Title *', required: true },
-      { name: 'imageUrl', label: 'Image URL *', required: true, placeholder: '/assets/gallery/…' },
+      { name: 'imageUrl', label: 'Image *', type: 'image', required: true },
       { name: 'credit', label: 'Credit', placeholder: 'Photographer / source' },
       { name: 'description', label: 'Description *', type: 'textarea', rows: 4, required: true },
     ],
@@ -171,7 +172,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
     description:
       'Background images for the homepage hero carousel, displayed in order. Required fields are marked with *.',
     fields: [
-      { name: 'imageUrl', label: 'Image URL *', required: true, placeholder: 'https://… or /assets/…' },
+      { name: 'imageUrl', label: 'Background image *', type: 'image', required: true },
       { name: 'altText', label: 'Alt text', placeholder: 'Describes the image (used by screen readers)' },
       { name: 'sortOrder', label: 'Display order', placeholder: '0 = first, 1 = second, …' },
       {
@@ -356,6 +357,21 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
                   ))}
                 </select>
               </div>
+            );
+          }
+          if (f.type === 'image') {
+            return (
+              <ImageUpload
+                key={f.name}
+                label={f.label.replace(/\s*\*$/, '')}
+                required={f.required}
+                value={value}
+                token={token}
+                onChange={(url) =>
+                  setForm((prev) => ({ ...prev, [f.name]: url }))
+                }
+                helpText="Upload an image file (PNG, JPG or WebP up to 8 MB)."
+              />
             );
           }
           return (

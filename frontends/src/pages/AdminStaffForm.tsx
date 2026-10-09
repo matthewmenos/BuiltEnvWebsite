@@ -4,6 +4,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import { IStaff } from 'shared/schema';
 import { staff as staffData } from '../data/staff';
 import { useAuth } from '../context/ThemeContext';
+import ImageUpload from '../components/ImageUpload';
 
 const emptyForm = {
   name: '',
@@ -107,10 +108,6 @@ const AdminStaffForm: React.FC = () => {
             <input id="department" name="department" value={form.department} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label htmlFor="image">Photo URL *</label>
-            <input id="image" name="image" value={form.image} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
             <label htmlFor="email">Email *</label>
             <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required />
           </div>
@@ -118,6 +115,16 @@ const AdminStaffForm: React.FC = () => {
             <label htmlFor="phone">Phone</label>
             <input id="phone" name="phone" value={form.phone} onChange={handleChange} />
           </div>
+        </div>
+        <div className="form-grid">
+          <ImageUpload
+            label="Photo"
+            required
+            value={form.image}
+            token={token}
+            onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
+            helpText="Upload a portrait photo (PNG, JPG or WebP up to 8 MB)."
+          />
         </div>
         <div className="form-group">
           <label htmlFor="address">Address</label>
