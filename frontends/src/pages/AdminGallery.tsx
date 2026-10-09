@@ -30,7 +30,11 @@ const AdminGallery: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/admin/files');
+      const res = await fetch('/api/admin/files', {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
       const data = (await res.json().catch(() => ({}))) as {
         items?: StoredFile[];
         error?: string;
@@ -94,7 +98,7 @@ const AdminGallery: React.FC = () => {
     <div>
       <h1 className="page-title">Gallery Uploads</h1>
       <p className="page-description">
-        Upload image files to the library. Uploaded images are served from disk
+        Upload image files to the library. Images are stored in Cloudflare R2
         and can be selected when editing gallery items, news, events and
         homepage slides.
       </p>
@@ -148,7 +152,7 @@ const AdminGallery: React.FC = () => {
         <div className="upload-text">
           {uploading ? 'Uploading' : 'Drag & drop images here'}
         </div>
-        <div className="upload-hint">PNG, JPG or WebP up to 8 MB each.</div>
+        <div className="upload-hint">PNG, JPG or WebP up to 3 MB each.</div>
       </div>
 
       {loading ? (

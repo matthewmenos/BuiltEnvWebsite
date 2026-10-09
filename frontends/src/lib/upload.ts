@@ -2,7 +2,7 @@
  * File-based upload helpers.
  *
  * Files are read in the browser as base64 data URLs and POSTed to
- * `/api/admin/files`, which writes them to disk. The server returns a stable
+ * `/api/admin/files`, which stores them in Cloudflare R2. The server returns a stable
  * id; that id becomes a public URL served by `/api/uploads/<id>`.
  * No image is referenced by an external URL — everything is file based.
  */
@@ -26,7 +26,7 @@ export interface UploadedFile {
 }
 
 export interface UploadResult {
-  /** Public URL to embed in an <img src> (served from disk). */
+  /** Public URL to embed in an <img src> (proxied from R2). */
   url: string;
   id: string;
   name: string;

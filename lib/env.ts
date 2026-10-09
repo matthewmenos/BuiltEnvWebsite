@@ -31,7 +31,13 @@ export const env = {
   get jwtExpiresIn(): string {
     return read('JWT_EXPIRES_IN') || '7d';
   },
-  // R2 is optional (files endpoint is an MVP placeholder).
+  // --- Cloudflare R2 (REQUIRED — all media storage, see lib/r2.ts) ---
+  // Read lazily; lib/r2.ts validates presence with actionable errors so
+  // unrelated endpoints (e.g. /api/health) keep working when R2 is unset.
+  /** Optional S3-compatible endpoint override (local mocks / MinIO). */
+  get r2Endpoint(): string {
+    return read('R2_ENDPOINT') || '';
+  },
   get r2AccountId(): string {
     return read('R2_ACCOUNT_ID') || '';
   },
@@ -43,6 +49,14 @@ export const env = {
   },
   get r2Bucket(): string {
     return read('R2_BUCKET') || '';
+  },
+  /**
+   * Optional public base URL (R2 public dev URL or custom domain). When set,
+   * GET /api/uploads/<id> 302-redirects there instead of proxying through
+   * this function. Requires a publicly reachable bucket.
+   */
+  get r2PublicUrl(): string {
+    return read('R2_PUBLIC_URL') || '';
   },
   get adminEmail(): string {
     return required('ADMIN_EMAIL');

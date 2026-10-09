@@ -1,89 +1,32 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import {
-  mkdirSync,
-  readFileSync,
-  writeFileSync,
-  existsSync,
-  rmSync,
-} from 'fs';
 import { randomUUID } from 'crypto';
-import path from 'path';
 
-import { requireAuth } from '../../lib/http';
-import { getRegistryFile, getUploadDir } from '../../lib/uploads-dir';
+import { handleError, HttpError, readJsonBody, requireAuth, sendJson } from '../../lib/http';
+import {
+  deleteR2Object,
+  loadUploadRegistry,
+  putR2Object,
+  saveUploadRegistry,
+  uploadKey,
+  type StoredFile,
+} from '../../lib/r2';
 
-// Uploaded binaries live on disk under the shared `uploads/` folder. The
-// directory is resolved by the shared helper so this route and the public
-// /api/uploads/[id] route always read and write the SAME location.
-const UPLOAD_DIR = getUploadDir();
-// The registry maps each logical id -> { disk path + metadata } and is what the
-// list/delete endpoints read/write. It is the single source of truth.
-const REGISTRY_FILE = getRegistryFile();
+// All media lives in Cloudflare R2 (lib/r2.ts): objects at `uploads/<id>`
+// plus a JSON registry at `meta/registry.json`. Nothing touches the local
+// filesystem — Vercel's serverless FS is read-only and ephemeral, which is
+// why the previous disk-based implementation lost files between deploys.
 
-const MAX_BYTES = 8 * 1024 * 1024; // 8 MB per file
+// Vercel caps request bodies at 4.5 MB and base64 inflates ~4/3, so a 3 MB
+// file lands at ~4 MB on the wire — the largest that reliably fits.
+const MAX_BYTES = 3 * 1024 * 1024;
 
-interface StoredFile {
-  id: string;
-  name: string;
-  mimeType: string;
-  size: number;
-  uploadedAt: string;
-  /** File name on disk (uuid + ext). Kept so DELETE removes the right file. */
-  diskName: string;
+interface IncomingFile {
+  name?: string;
+  mimeType?: string;
+  dataUrl?: string;
 }
 
-type RegistryEntry = StoredFile;
-
-function ensureUploadDir(): void {
-  if (!existsSync(UPLOAD_DIR)) {
-    mkdirSync(UPLOAD_DIR, { recursive: true });
-  }
-}
-
-function loadRegistry(): RegistryEntry[] {
-  if (!existsSync(REGISTRY_FILE)) return [];
-  try {
-    const raw = readFileSync(REGISTRY_FILE, 'utf8');
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? parsed.filter((f): f is RegistryEntry => !!f && typeof f === 'object')
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveRegistry(files: RegistryEntry[]): void {
-  try {
-    writeFileSync(REGISTRY_FILE, JSON.stringify(files, null, 2), 'utf8');
-  } catch {
-    // Ignore registry persistence failures; the response still reflects the save.
-  }
-}
-
-function extFromMime(mimeType: string): string {
-  const base = mimeType.split(';')[0]?.trim().toLowerCase() ?? '';
-  const map: Record<string, string> = {
-    'image/jpeg': '.jpg',
-    'image/jpg': '.jpg',
-    'image/png': '.png',
-    'image/webp': '.webp',
-    'image/gif': '.gif',
-    'image/svg+xml': '.svg',
-    'image/avif': '.avif',
-    'application/pdf': '.pdf',
-  };
-  return map[base] ?? '';
-}
-
-function safeExt(originalName: string): string {
-  return path.extname(originalName || '').toLowerCase().slice(0, 10);
-}
-
-/**
- * Parse a `data:<mime>;base64,<payload>` string into raw bytes.
- * Returns null if the string is not a valid base64 data URL.
- */
+/** Parse a `data:<mime>;base64,<payload>` string into raw bytes. */
 function parseDataUrl(dataUrl: string): { buffer: Buffer; mimeType: string } | null {
   const match = /^data:([^;,]+)(;base64)?,(.*)$/s.exec(dataUrl.trim());
   if (!match) return null;
@@ -100,10 +43,20 @@ function parseDataUrl(dataUrl: string): { buffer: Buffer; mimeType: string } | n
   }
 }
 
-interface IncomingFile {
-  name?: string;
-  mimeType?: string;
-  dataUrl?: string;
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': '.jpg',
+  'image/jpg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif',
+  'image/svg+xml': '.svg',
+  'image/avif': '.avif',
+  'application/pdf': '.pdf',
+};
+
+function extFromMime(mimeType: string): string {
+  const base = mimeType.split(';')[0]?.trim().toLowerCase() ?? '';
+  return MIME_TO_EXT[base] ?? '';
 }
 
 /** Normalise `{ files: [...] }` or a single `{ file: {...} }` body into a list. */
@@ -122,118 +75,116 @@ function normalizeFiles(body: Record<string, unknown>): IncomingFile[] {
   return out;
 }
 
+/** Best-effort undo of a half-finished batch (registry write failed). */
+async function rollbackBatch(saved: StoredFile[]): Promise<void> {
+  for (const file of saved) {
+    try {
+      await deleteR2Object(uploadKey(file.id));
+    } catch (err) {
+      console.error('[files] rollback failed for', file.id, err);
+    }
+  }
+}
+
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ): Promise<void> {
   try {
     if (req.method === 'OPTIONS') {
-      res.status(200).json({});
+      sendJson(res, 200, {});
       return;
     }
 
     if (req.method === 'GET') {
-      const files = loadRegistry();
-      res.status(200).json({ items: files });
+      // Admin library listing — same auth bar as create/delete.
+      requireAuth(req);
+      const items = await loadUploadRegistry();
+      sendJson(res, 200, { items });
       return;
     }
 
     if (req.method === 'POST') {
       requireAuth(req);
-      const body = (req.body ?? {}) as Record<string, unknown>;
+      const body = await readJsonBody<Record<string, unknown>>(req);
       const incoming = normalizeFiles(body);
       if (incoming.length === 0) {
-        res.status(400).json({ error: 'No files uploaded' });
+        sendJson(res, 400, { error: 'No files uploaded' });
         return;
       }
 
-      ensureUploadDir();
-      const saved: RegistryEntry[] = [];
+      const saved: StoredFile[] = [];
+      try {
+        for (const item of incoming) {
+          if (!item.dataUrl) throw new HttpError(400, 'Missing file data');
+          const parsed = parseDataUrl(item.dataUrl);
+          if (!parsed) throw new HttpError(400, 'Invalid file data');
+          if (parsed.buffer.length === 0) throw new HttpError(400, 'Empty file');
+          if (parsed.buffer.length > MAX_BYTES) {
+            throw new HttpError(413, 'File too large (max 3 MB)');
+          }
 
-      for (const item of incoming) {
-        if (!item.dataUrl) {
-          res.status(400).json({ error: 'Missing file data' });
-          return;
-        }
-        const parsed = parseDataUrl(item.dataUrl);
-        if (!parsed) {
-          res.status(400).json({ error: 'Invalid file data' });
-          return;
-        }
-        if (parsed.buffer.length === 0) {
-          res.status(400).json({ error: 'Empty file' });
-          return;
-        }
-        if (parsed.buffer.length > MAX_BYTES) {
-          res.status(413).json({ error: 'File too large (max 8 MB)' });
-          return;
+          const id = randomUUID();
+          const mimeType = item.mimeType || parsed.mimeType;
+          const name = item.name || `${id}${extFromMime(mimeType)}`;
+          const key = uploadKey(id);
+          await putR2Object(key, parsed.buffer, { contentType: mimeType, filename: name });
+          saved.push({
+            id,
+            name,
+            mimeType,
+            size: parsed.buffer.length,
+            uploadedAt: new Date().toISOString(),
+            key,
+          });
         }
 
-        const id = randomUUID();
-        const ext =
-          safeExt(item.name ?? '') || extFromMime(item.mimeType || parsed.mimeType);
-        const diskName = `${id}${ext}`;
-        writeFileSync(path.join(UPLOAD_DIR, diskName), parsed.buffer);
-
-        saved.push({
-          id,
-          name: item.name || diskName,
-          mimeType: item.mimeType || parsed.mimeType,
-          size: parsed.buffer.length,
-          uploadedAt: new Date().toISOString(),
-          diskName,
-        });
+        // Registry round-trip: read + append + write. A failed write rolls the
+        // batch back so R2 objects and the registry never silently diverge.
+        const registry = await loadUploadRegistry();
+        registry.push(...saved);
+        await saveUploadRegistry(registry);
+      } catch (err) {
+        await rollbackBatch(saved);
+        throw err;
       }
 
-      const registry = loadRegistry();
-      registry.push(...saved);
-      saveRegistry(registry);
-
-      res.status(201).json({ items: saved });
+      sendJson(res, 201, { items: saved });
       return;
     }
 
     if (req.method === 'DELETE') {
       requireAuth(req);
-      const body = (req.body ?? {}) as { id?: string; name?: string };
-      const id = body.id || body.name;
-      if (!id) {
-        res.status(400).json({ error: 'Missing id' });
+      const body = await readJsonBody<{ id?: string; name?: string }>(req);
+      const needle = body.id || body.name;
+      if (!needle) {
+        sendJson(res, 400, { error: 'Missing id' });
         return;
       }
 
-      const registry = loadRegistry();
-      const index = registry.findIndex((f) => f.id === id || f.name === id);
+      const registry = await loadUploadRegistry();
+      const index = registry.findIndex((f) => f.id === needle || f.name === needle);
       if (index === -1) {
-        res.status(404).json({ error: 'File not found' });
+        sendJson(res, 404, { error: 'File not found' });
+        return;
+      }
+      const entry = registry[index];
+      if (!entry) {
+        sendJson(res, 404, { error: 'File not found' });
         return;
       }
 
-      const file = registry[index];
-      if (!file) {
-        res.status(404).json({ error: 'File not found' });
-        return;
-      }
-      try {
-        rmSync(path.join(UPLOAD_DIR, file.diskName || file.name), { force: true });
-      } catch {
-        // Ignore file-system removal errors; registry state is authoritative.
-      }
+      // Object first: if this fails the registry still points at it (retryable);
+      // the reverse order would orphan the object with no way to find it.
+      await deleteR2Object(uploadKey(entry.id));
       registry.splice(index, 1);
-      saveRegistry(registry);
-      res.status(200).json({ item: file });
+      await saveUploadRegistry(registry);
+      sendJson(res, 200, { item: entry });
       return;
     }
 
-    res.status(405).json({ error: 'Method not allowed' });
+    sendJson(res, 405, { error: 'Method not allowed' });
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('[api/files]', err);
-    const status = (err as { status?: number }).status;
-    if (typeof status === 'number') {
-      res.status(status).json({ error: (err as Error).message });
-      return;
-    }
-    res.status(500).json({ error: 'Internal server error' });
+    handleError(res, err);
   }
 }

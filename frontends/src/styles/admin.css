@@ -649,7 +649,7 @@
 .spin { animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Admin gallery file grid — real image previews served from disk */
+/* Admin gallery file grid — real image previews served from R2 */
 .gallery-item-img img {
   width: 100%;
   height: 100%;

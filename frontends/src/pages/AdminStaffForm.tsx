@@ -123,7 +123,7 @@ const AdminStaffForm: React.FC = () => {
             value={form.image}
             token={token}
             onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
-            helpText="Upload a portrait photo (PNG, JPG or WebP up to 8 MB)."
+            helpText="Upload a portrait photo (PNG, JPG or WebP up to 3 MB)."
           />
         </div>
         <div className="form-group">

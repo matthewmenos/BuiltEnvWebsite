@@ -1,79 +1,85 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { readFileSync, existsSync } from 'fs';
-import path from 'path';
 
-import { getRegistryFile, getUploadDir } from '../../lib/uploads-dir';
+import { handleError, HttpError, sendJson } from '../../lib/http';
+import {
+  getR2Object,
+  MEDIA_CACHE_CONTROL,
+  r2PublicObjectUrl,
+  uploadKey,
+} from '../../lib/r2';
 
-// Public, unauthenticated route that streams a previously-uploaded file by id.
-// The binary lives on disk in `uploads/`; the registry maps id -> disk name.
-// The directory is resolved by the shared helper so it always matches the
-// location written by the admin upload endpoint (api/admin/files.ts).
-const UPLOAD_DIR = getUploadDir();
-const REGISTRY_FILE = getRegistryFile();
-
-interface RegistryEntry {
-  id: string;
-  name: string;
-  mimeType: string;
-  size: number;
-  diskName: string;
-}
-
-const CACHE_HEADERS = {
-  'Cache-Control': 'public, max-age=31536000, immutable',
-};
-
+/**
+ * Public route: streams a stored file by id. Objects live in R2 under
+ * `uploads/<id>` — the key derives from the id (validated inside uploadKey),
+ * so reads need no registry lookup and keep working even if the registry
+ * write failed.
+ *
+ * Default: proxy bytes through this function (works with a private bucket,
+ * immutable caching applied here). If R2_PUBLIC_URL is configured (public
+ * bucket / custom domain), answer with a 302 instead so traffic goes
+ * straight from the CDN to the browser.
+ */
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ): Promise<void> {
   if (req.method !== 'GET') {
-    res.status(405).json({ error: 'Method not allowed' });
+    sendJson(res, 405, { error: 'Method not allowed' });
     return;
   }
 
-  // Support both `/api/uploads/<id>` (dynamic segment) and `?id=<id>`.
   const q = req.query as Record<string, string | string[] | undefined>;
   const rawId = Array.isArray(q.id) ? q.id[0] : q.id;
   if (!rawId) {
-    res.status(400).json({ error: 'Missing id' });
+    sendJson(res, 400, { error: 'Missing id' });
     return;
   }
 
   try {
-    if (!existsSync(REGISTRY_FILE)) {
-      res.status(404).json({ error: 'Not found' });
-      return;
-    }
-    const registry = JSON.parse(
-      readFileSync(REGISTRY_FILE, 'utf8')
-    ) as RegistryEntry[];
-    const entry = Array.isArray(registry)
-      ? registry.find((f) => f && (f.id === rawId || f.name === rawId))
-      : undefined;
-    if (!entry) {
-      res.status(404).json({ error: 'Not found' });
+    const key = uploadKey(rawId); // throws 400 on malformed ids (no key escape)
+
+    const publicUrl = r2PublicObjectUrl(key);
+    if (publicUrl) {
+      res.setHeader('Cache-Control', MEDIA_CACHE_CONTROL);
+      res.redirect(302, publicUrl);
       return;
     }
 
-    const filePath = path.join(UPLOAD_DIR, entry.diskName || entry.name);
-    if (!existsSync(filePath)) {
-      res.status(404).json({ error: 'Not found' });
-      return;
-    }
-
-    const buffer = readFileSync(filePath);
-    res.setHeader('Content-Type', entry.mimeType || 'application/octet-stream');
-    res.setHeader('Content-Length', String(buffer.length));
-    res.setHeader('Cache-Control', CACHE_HEADERS['Cache-Control']);
-    res.setHeader(
-      'Content-Disposition',
-      `inline; filename="${encodeURIComponent(entry.name || entry.id)}"`
+    const ifNoneMatch = req.headers['if-none-match'];
+    const upstream = await getR2Object(
+      key,
+      ifNoneMatch ? { 'If-None-Match': ifNoneMatch } : {}
     );
+
+    if (upstream.status === 304) {
+      res.status(304).end();
+      return;
+    }
+    if (upstream.status === 404) {
+      sendJson(res, 404, { error: 'Not found' });
+      return;
+    }
+    if (!upstream.ok) {
+      console.error(`[uploads] R2 GET ${key} -> ${upstream.status}`);
+      throw new HttpError(502, `Storage read failed (${upstream.status})`);
+    }
+
+    const buffer = Buffer.from(await upstream.arrayBuffer());
+    res.setHeader(
+      'Content-Type',
+      upstream.headers.get('content-type') || 'application/octet-stream'
+    );
+    const disposition = upstream.headers.get('content-disposition');
+    if (disposition) res.setHeader('Content-Disposition', disposition);
+    const etag = upstream.headers.get('etag');
+    if (etag) res.setHeader('ETag', etag);
+    res.setHeader(
+      'Cache-Control',
+      upstream.headers.get('cache-control') || MEDIA_CACHE_CONTROL
+    );
+    res.setHeader('Content-Length', String(buffer.length));
     res.status(200).send(buffer);
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('[api/uploads]', err);
-    res.status(500).json({ error: 'Internal server error' });
+    handleError(res, err);
   }
 }

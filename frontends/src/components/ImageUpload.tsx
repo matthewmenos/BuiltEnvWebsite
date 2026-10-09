@@ -15,7 +15,7 @@ interface ImageUploadProps {
 }
 
 /**
- * File-based image picker. Selecting a file uploads it to disk and stores the
+ * File-based image picker. Selecting a file uploads it to Cloudflare R2 and stores the
  * resulting `/api/uploads/<id>` URL. Shows a live preview and a working remove
  * button (which deletes the file from the server when it is an uploaded one).
  */
@@ -25,7 +25,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   token,
   label = 'Image',
   required = false,
-  helpText = 'PNG, JPG or WebP up to 8 MB.',
+  helpText = 'PNG, JPG or WebP up to 3 MB.',
   name,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);

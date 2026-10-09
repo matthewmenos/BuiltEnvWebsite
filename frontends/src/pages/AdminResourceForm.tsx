@@ -370,7 +370,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
                 onChange={(url) =>
                   setForm((prev) => ({ ...prev, [f.name]: url }))
                 }
-                helpText="Upload an image file (PNG, JPG or WebP up to 8 MB)."
+                helpText="Upload an image file (PNG, JPG or WebP up to 3 MB)."
               />
             );
           }
