@@ -35,7 +35,24 @@
   transition: opacity 1s ease-in-out;
 }
 .hero-slide.is-active { opacity: 1; }
-.hero-slide img { width: 100%; height: 100%; object-fit: cover; }
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Slow Ken Burns drift on the active slide so the hero always feels alive —
+   even with a single image (nothing to rotate to). Resets on each activation. */
+.hero-slide.is-active img {
+  animation: hero-kenburns 7s ease-out both;
+}
+@keyframes hero-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide { transition: none; }
+  .hero-slide.is-active img { animation: none; }
+}
 /* Legibility wash over the imagery */
 .hero-overlay {
   position: absolute; inset: 0;
