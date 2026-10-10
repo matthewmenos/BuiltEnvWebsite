@@ -1,7 +1,11 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ImagePlus, Loader2, Trash2, Upload } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
+import SearchInput from '../components/SearchInput';
+import { CardGridSkeleton } from '../components/Skeleton';
 import { deleteUploadedFile, readFileAsDataUrl, uploadUrl } from '../lib/upload';
 
 interface StoredFile {
@@ -25,6 +29,9 @@ const AdminGallery: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
+  const [query, setQuery] = useState('');
+  const { confirm } = useConfirm();
+  const toast = useToast();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -52,6 +59,16 @@ const AdminGallery: React.FC = () => {
     load();
   }, [load]);
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return files;
+    return files.filter((f) =>
+      [f.name, f.mimeType]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q))
+    );
+  }, [files, query]);
+
   const upload = async (file: File) => {
     setError('');
     setUploading(true);
@@ -70,8 +87,11 @@ const AdminGallery: React.FC = () => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Upload failed');
       await load();
+      toast.success(`"${file.name}" uploaded`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+      const message = err instanceof Error ? err.message : 'Upload failed';
+      setError(message);
+      toast.error(message);
     } finally {
       setUploading(false);
     }
@@ -84,13 +104,21 @@ const AdminGallery: React.FC = () => {
   };
 
   const handleDelete = async (file: StoredFile) => {
-    if (!window.confirm(`Delete "${file.name}"? This cannot be undone.`)) return;
+    const ok = await confirm({
+      message: `Delete "${file.name}"? This cannot be undone.`,
+      confirmLabel: 'Delete',
+      tone: 'danger',
+    });
+    if (!ok) return;
     setError('');
     try {
       await deleteUploadedFile(file.id, token);
       await load();
+      toast.success(`"${file.name}" deleted`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Delete failed');
+      const message = err instanceof Error ? err.message : 'Delete failed';
+      setError(message);
+      toast.error(message);
     }
   };
 
@@ -156,15 +184,27 @@ const AdminGallery: React.FC = () => {
       </div>
 
       {loading ? (
-        <p className="text-muted">Loading uploads</p>
+        <CardGridSkeleton cards={6} />
       ) : files.length === 0 ? (
         <div className="empty-state">
           <ImagePlus size={44} aria-hidden="true" />
           <p>No uploads yet. Add an image to build your library.</p>
         </div>
       ) : (
-        <div className="gallery-list">
-          {files.map((file) => (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              placeholder="Search by file name or type"
+              resultCount={filtered.length}
+            />
+          </div>
+          {filtered.length === 0 ? (
+            <div className="empty-state">No uploads match your search.</div>
+          ) : (
+          <div className="gallery-list">
+            {filtered.map((file) => (
             <div key={file.id} className="gallery-item-card">
               <div className="gallery-item-img">
                 <img src={uploadUrl(file.id)} alt={file.name} loading="lazy" />
@@ -198,7 +238,9 @@ const AdminGallery: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+          )}
+        </>
       )}
     </div>
   );

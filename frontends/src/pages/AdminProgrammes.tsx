@@ -1,13 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
+import SearchInput from '../components/SearchInput';
+import { TableSkeleton } from '../components/Skeleton';
 
 const AdminProgrammes: React.FC = () => {
   const { token } = useAuth();
+  const { confirm } = useConfirm();
+  const toast = useToast();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [query, setQuery] = useState('');
   const [removingId, setRemovingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -27,8 +34,23 @@ const AdminProgrammes: React.FC = () => {
 
   useEffect(() => { load(); }, [load]);
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((item) =>
+      [item.shortCode, item.title, item.faculty]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q))
+    );
+  }, [items, query]);
+
   const handleDelete = async (item: any) => {
-    if (!window.confirm(`Delete "${item.title ?? item.id}"? This cannot be undone.`)) return;
+    const ok = await confirm({
+      message: `Delete "${item.title ?? item.id}"? This cannot be undone.`,
+      confirmLabel: 'Delete',
+      tone: 'danger',
+    });
+    if (!ok) return;
     setError('');
     setRemovingId(item.id);
     try {
@@ -39,8 +61,11 @@ const AdminProgrammes: React.FC = () => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Delete failed');
       await load();
+      toast.success('Programme deleted');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Delete failed');
+      const message = err instanceof Error ? err.message : 'Delete failed';
+      setError(message);
+      toast.error(message);
     } finally {
       setRemovingId(null);
     }
@@ -58,15 +83,27 @@ const AdminProgrammes: React.FC = () => {
       </div>
       {error && <div className="login-error">{error}</div>}
       {loading ? (
-        <p className="text-muted">Loading programmes...</p>
+        <TableSkeleton rows={5} columns={5} />
       ) : items.length === 0 ? (
         <div className="empty-state">No programmes yet.</div>
       ) : (
-        <div className="table-wrapper">
-          <table className="admin-table">
-            <thead><tr><th>Code</th><th>Title</th><th>Faculty</th><th>Duration</th><th>Actions</th></tr></thead>
-            <tbody>
-              {items.map((item) => (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              placeholder="Search by code, title or faculty"
+              resultCount={filtered.length}
+            />
+          </div>
+          {filtered.length === 0 ? (
+            <div className="empty-state">No programmes match your search.</div>
+          ) : (
+          <div className="table-wrapper">
+            <table className="admin-table">
+              <thead><tr><th>Code</th><th>Title</th><th>Faculty</th><th>Duration</th><th>Actions</th></tr></thead>
+              <tbody>
+                {filtered.map((item) => (
                 <tr key={item.id}>
                   <td>{item.shortCode}</td>
                   <td>{item.title}</td>
@@ -91,7 +128,9 @@ const AdminProgrammes: React.FC = () => {
               ))}
             </tbody>
           </table>
-        </div>
+          </div>
+          )}
+        </>
       )}
     </div>
   );

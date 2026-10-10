@@ -18,13 +18,22 @@ import './styles/gallery.css';
 import './styles/gallery-detail.css';
 import './styles/contact.css';
 import './styles/admin-login.css';
-import './styles/admin.css';
+import './styles/admin-base.css';
+import './styles/admin-dashboard.css';
+import './styles/admin-gallery.css';
+import './styles/admin-interactive.css';
+import { ToastProvider } from './context/ToastContext';
+import { ConfirmProvider } from './context/ConfirmContext';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <ToastProvider>
+          <ConfirmProvider>
+            <App />
+          </ConfirmProvider>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

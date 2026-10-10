@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { programmes as programmeSeed } from '../data/programmes';
 import { news as newsSeed } from '../data/news';
 import { events as eventSeed } from '../data/events';
@@ -196,6 +199,8 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   const isNew = !id;
   const navigate = useNavigate();
   const { token } = useAuth();
+  const { confirm } = useConfirm();
+  const toast = useToast();
 
   const emptyForm = (): Record<string, string> =>
     Object.fromEntries(
@@ -210,6 +215,11 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   const [status, setStatus] = useState<'idle' | 'saving'>('idle');
   const [error, setError] = useState('');
   const [notFound, setNotFound] = useState(false);
+  const [dirty, setDirty] = useState(false);
+
+  const { requestLeave } = useUnsavedChanges(dirty);
+  const goToList = () => navigate(config.listPath);
+  const guardedLeave = () => requestLeave(confirm, goToList);
 
   const apiPath = `/api/admin/${resource}`;
 
@@ -228,6 +238,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   useEffect(() => {
     setForm(emptyForm());
     setNotFound(false);
+    setDirty(false);
     if (!id) return;
 
     // 1) The list page renders seed data, so prefill from the seed first.
@@ -267,6 +278,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setDirty(true);
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -293,19 +305,31 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
       if (!response.ok) {
         throw new Error(data.error || 'Save failed');
       }
+      setDirty(false);
+      toast.success(
+        isNew
+          ? `${config.titleSingular} created`
+          : `${config.titleSingular} updated`
+      );
       navigate(config.listPath);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Save failed');
+      const message = err instanceof Error ? err.message : 'Save failed';
+      setError(message);
+      toast.error(message);
       setStatus('idle');
     }
   };
 
   return (
     <div>
-      <Link to={config.listPath} className="btn btn-sm btn-outline">
+      <button
+        type="button"
+        className="btn btn-sm btn-outline"
+        onClick={guardedLeave}
+      >
         <ArrowLeft size={14} aria-hidden="true" /> Back to{' '}
         {config.listPath.split('/').pop()}
-      </Link>
+      </button>
       <h1 className="page-title">
         {isNew ? `Add ${config.titleSingular}` : `Edit ${config.titleSingular}`}
       </h1>
@@ -367,9 +391,10 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
                 required={f.required}
                 value={value}
                 token={token}
-                onChange={(url) =>
-                  setForm((prev) => ({ ...prev, [f.name]: url }))
-                }
+                onChange={(url) => {
+                  setForm((prev) => ({ ...prev, [f.name]: url }));
+                  setDirty(true);
+                }}
                 helpText="Upload an image file (PNG, JPG or WebP up to 3 MB)."
               />
             );
@@ -398,9 +423,9 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
             <Save size={15} aria-hidden="true" />
             {status === 'saving' ? ' Saving...' : ' Save'}
           </button>
-          <Link to={config.listPath} className="btn btn-outline">
+          <button type="button" className="btn btn-outline" onClick={guardedLeave}>
             Cancel
-          </Link>
+          </button>
         </div>
       </form>
     </div>

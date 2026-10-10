@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
+import { Skeleton } from '../components/Skeleton';
 
 interface Counts {
   programmes: number;
@@ -156,9 +157,19 @@ const AdminDashboard: React.FC = () => {
           </button>
         </div>
         <div className="stats-grid">
-          {stats.map((s) => (
-            <StatCard key={s.label} {...s} />
-          ))}
+          {loading
+            ? Array.from({ length: stats.length }).map((_, i) => (
+                <div className="stat-card" key={i} aria-hidden="true">
+                  <Skeleton width={44} height={44} radius={10} />
+                  <div style={{ height: 12 }} />
+                  <Skeleton width="45%" height={30} />
+                  <div style={{ height: 6 }} />
+                  <Skeleton width="70%" height={12} />
+                </div>
+              ))
+            : stats.map((s) => (
+                <StatCard key={s.label} {...s} />
+              ))}
         </div>
       </div>
 

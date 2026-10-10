@@ -1,6 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
+import SearchInput from '../components/SearchInput';
+import { TableSkeleton } from '../components/Skeleton';
 
 interface ContactRow {
   id: string;
@@ -12,9 +16,12 @@ interface ContactRow {
 
 const AdminContacts: React.FC = () => {
   const { token } = useAuth();
+  const { confirm } = useConfirm();
+  const toast = useToast();
   const [items, setItems] = useState<ContactRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [query, setQuery] = useState('');
   const [removingId, setRemovingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -36,13 +43,23 @@ const AdminContacts: React.FC = () => {
     load();
   }, [load]);
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((c) =>
+      [c.name, c.email, c.subject]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q))
+    );
+  }, [items, query]);
+
   const handleDelete = async (item: ContactRow) => {
-    if (
-      !window.confirm(
-        `Delete message from "${item.name ?? item.email ?? item.id}"? This cannot be undone.`
-      )
-    )
-      return;
+    const ok = await confirm({
+      message: `Delete message from "${item.name ?? item.email ?? item.id}"? This cannot be undone.`,
+      confirmLabel: 'Delete',
+      tone: 'danger',
+    });
+    if (!ok) return;
     setError('');
     setRemovingId(item.id);
     try {
@@ -53,8 +70,11 @@ const AdminContacts: React.FC = () => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Delete failed');
       await load();
+      toast.success('Message deleted');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Delete failed');
+      const message = err instanceof Error ? err.message : 'Delete failed';
+      setError(message);
+      toast.error(message);
     } finally {
       setRemovingId(null);
     }

@@ -1,7 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
+import SearchInput from '../components/SearchInput';
+import { TableSkeleton } from '../components/Skeleton';
 
 interface HomeSlide {
   id: string;
@@ -13,9 +17,12 @@ interface HomeSlide {
 
 const AdminHomeSlides: React.FC = () => {
   const { token } = useAuth();
+  const { confirm } = useConfirm();
+  const toast = useToast();
   const [slides, setSlides] = useState<HomeSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [query, setQuery] = useState('');
   const [removingId, setRemovingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -39,8 +46,23 @@ const AdminHomeSlides: React.FC = () => {
     load();
   }, [load]);
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return slides;
+    return slides.filter((s) =>
+      [s.altText, s.imageUrl]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q))
+    );
+  }, [slides, query]);
+
   const handleDelete = async (slide: HomeSlide) => {
-    if (!window.confirm('Delete this slide? This cannot be undone.')) return;
+    const ok = await confirm({
+      message: 'Delete this slide? This cannot be undone.',
+      confirmLabel: 'Delete',
+      tone: 'danger',
+    });
+    if (!ok) return;
     setError('');
     setRemovingId(slide.id);
     try {
@@ -53,8 +75,11 @@ const AdminHomeSlides: React.FC = () => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Delete failed');
       await load();
+      toast.success('Slide deleted');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Delete failed');
+      const message = err instanceof Error ? err.message : 'Delete failed';
+      setError(message);
+      toast.error(message);
     } finally {
       setRemovingId(null);
     }
@@ -75,26 +100,38 @@ const AdminHomeSlides: React.FC = () => {
       </div>
       {error && <div className="login-error">{error}</div>}
       {loading ? (
-        <p className="text-muted">Loading slides…</p>
+        <TableSkeleton rows={4} columns={5} />
       ) : slides.length === 0 ? (
-        <p className="text-muted">
-          No slides yet — the homepage shows its gradient hero until you add
-          at least one.
-        </p>
+        <div className="empty-state">
+          No slides yet &mdash; the homepage shows its gradient hero until you
+          add at least one.
+        </div>
       ) : (
-        <div className="table-wrapper">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Preview</th>
-                <th>Alt text</th>
-                <th>Order</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {slides.map((slide) => (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              placeholder="Search by alt text"
+              resultCount={filtered.length}
+            />
+          </div>
+          {filtered.length === 0 ? (
+            <div className="empty-state">No slides match your search.</div>
+          ) : (
+          <div className="table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Preview</th>
+                  <th>Alt text</th>
+                  <th>Order</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((slide) => (
                 <tr key={slide.id}>
                   <td>
                     <img src={slide.imageUrl} alt="" className="slide-thumb" />
@@ -130,7 +167,9 @@ const AdminHomeSlides: React.FC = () => {
               ))}
             </tbody>
           </table>
-        </div>
+          </div>
+          )}
+        </>
       )}
     </div>
   );

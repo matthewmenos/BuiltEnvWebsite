@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { IStaff } from 'shared/schema';
 import { staff as staffData } from '../data/staff';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import ImageUpload from '../components/ImageUpload';
 
 const emptyForm = {
@@ -23,11 +26,19 @@ const AdminStaffForm: React.FC = () => {
   const isNew = !id || id === 'new';
   const navigate = useNavigate();
   const { token } = useAuth();
+  const { confirm } = useConfirm();
+  const toast = useToast();
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState<'idle' | 'saving' | 'error'>('idle');
   const [error, setError] = useState('');
+  const [dirty, setDirty] = useState(false);
+
+  const { requestLeave } = useUnsavedChanges(dirty);
+  const goToList = () => navigate('/admin/staff');
+  const guardedLeave = () => requestLeave(confirm, goToList);
 
   useEffect(() => {
+    setDirty(false);
     if (!isNew && id) {
       const existing = staffData.find((s: IStaff) => s.id === id);
       if (existing) {
@@ -51,6 +62,7 @@ const AdminStaffForm: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setDirty(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,18 +85,26 @@ const AdminStaffForm: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.error || 'Save failed');
       }
+      setDirty(false);
+      toast.success('Staff member saved');
       navigate('/admin/staff');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Save failed');
+      const message = err instanceof Error ? err.message : 'Save failed';
+      setError(message);
+      toast.error(message);
       setStatus('error');
     }
   };
 
   return (
     <div>
-      <Link to="/admin/staff" className="btn btn-sm btn-outline">
+      <button
+        type="button"
+        className="btn btn-sm btn-outline"
+        onClick={guardedLeave}
+      >
         <ArrowLeft size={14} aria-hidden="true" /> Back to staff
-      </Link>
+      </button>
       <h1 className="page-title">{isNew ? 'Add Staff Member' : 'Edit Staff Member'}</h1>
       <p className="page-description">
         The welcome message is shown on the homepage for the Head of Department
@@ -122,7 +142,10 @@ const AdminStaffForm: React.FC = () => {
             required
             value={form.image}
             token={token}
-            onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
+            onChange={(url) => {
+              setForm((prev) => ({ ...prev, image: url }));
+              setDirty(true);
+            }}
             helpText="Upload a portrait photo (PNG, JPG or WebP up to 3 MB)."
           />
         </div>
@@ -150,9 +173,9 @@ const AdminStaffForm: React.FC = () => {
             <Save size={15} aria-hidden="true" />
             {status === 'saving' ? ' Saving...' : ' Save staff member'}
           </button>
-          <Link to="/admin/staff" className="btn btn-outline">
+          <button type="button" className="btn btn-outline" onClick={guardedLeave}>
             Cancel
-          </Link>
+          </button>
         </div>
       </form>
     </div>

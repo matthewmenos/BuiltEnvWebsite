@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../context/ThemeContext';
+import { useConfirm } from '../context/ConfirmContext';
+import { useToast } from '../context/ToastContext';
 
 interface Pagination {
   total: number;
@@ -33,6 +35,8 @@ export function useAdminResource<T extends { id: string }>(
   limit = 100
 ): AdminResource<T> {
   const { token } = useAuth();
+  const { confirm } = useConfirm();
+  const toast = useToast();
   const [items, setItems] = useState<T[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -63,9 +67,12 @@ export function useAdminResource<T extends { id: string }>(
 
   const remove = useCallback(
     async (id: string): Promise<boolean> => {
-      if (!window.confirm('Delete this item? This cannot be undone.')) {
-        return false;
-      }
+      const ok = await confirm({
+        message: 'Delete this item? This cannot be undone.',
+        confirmLabel: 'Delete',
+        tone: 'danger',
+      });
+      if (!ok) return false;
       setDeletingId(id);
       setError('');
       try {
@@ -78,15 +85,18 @@ export function useAdminResource<T extends { id: string }>(
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || 'Delete failed');
         await reload();
+        toast.success('Item deleted');
         return true;
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Delete failed');
+        const message = err instanceof Error ? err.message : 'Delete failed';
+        setError(message);
+        toast.error(message);
         return false;
       } finally {
         setDeletingId(null);
       }
     },
-    [endpoint, token, reload]
+    [endpoint, token, reload, confirm, toast]
   );
 
   return { items, total, loading, error, reload, remove, deletingId };
