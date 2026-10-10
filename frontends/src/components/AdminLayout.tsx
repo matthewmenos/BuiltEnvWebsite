@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   House,
@@ -37,11 +37,11 @@ const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div>
-      {/* Hide the admin chrome on the login page — visitors without a
+    <div className="admin-shell">
+      {/* Hide the admin sidebar on the login page — visitors without a
           session should only see the login card. */}
       {isAuthenticated && (
-        <div className="admin-nav">
+        <aside className="admin-sidebar">
           <div className="admin-nav-brand">
             <div className="admin-nav-logos">
               <DualLogos
@@ -54,22 +54,26 @@ const AdminLayout: React.FC = () => {
             </div>
             <span className="admin-logo-text">Admin Panel</span>
           </div>
-          <nav className="admin-nav-links">
+          <nav className="admin-nav-links" aria-label="Admin navigation">
             {adminLinks.map((link) => {
               const LinkIcon = link.icon;
               return (
-                <Link key={link.path} to={link.path}>
-                  <LinkIcon size={15} aria-hidden="true" />
+                <NavLink key={link.path} to={link.path}>
+                  <LinkIcon size={16} aria-hidden="true" />
                   <span>{link.label}</span>
-                </Link>
+                </NavLink>
               );
             })}
-            <button className="admin-logout" onClick={handleLogout}>
-              <LogOut size={15} aria-hidden="true" />
+            <button
+              className="admin-logout"
+              type="button"
+              onClick={handleLogout}
+            >
+              <LogOut size={16} aria-hidden="true" />
               <span>Logout</span>
             </button>
           </nav>
-        </div>
+        </aside>
       )}
       <main className="admin-main">
         <Outlet />
