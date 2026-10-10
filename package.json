@@ -8,6 +8,7 @@
     "dev:frontends": "npm run dev -w frontends",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:apply": "node scripts/apply-migrations.mjs",
     "db:push": "drizzle-kit push",
     "vercel": "vercel",
     "deploy": "vercel --prod",
