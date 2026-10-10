@@ -72,10 +72,11 @@ const AdminLayout: React.FC = () => {
 
   return (
     <div className="admin-shell">
-      {/* Hide the admin sidebar on the login page — visitors without a
+      {/* Hide the admin chrome on the login page — visitors without a
           session should only see the login card. */}
       {/* Mobile top bar — brand + hamburger toggle. */}
-      <div className="admin-mobile-bar">
+      {isAuthenticated && (
+        <div className="admin-mobile-bar">
         <div className="admin-nav-logos">
           <DualLogos
             imgClassName="admin-logo-img"
@@ -102,7 +103,8 @@ const AdminLayout: React.FC = () => {
             <Menu size={22} aria-hidden="true" />
           )}
         </button>
-      </div>
+        </div>
+      )}
 
       {/* Fixed left drawer — slides in from the left edge. */}
       {isAuthenticated && (

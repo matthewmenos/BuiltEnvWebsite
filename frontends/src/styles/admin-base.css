@@ -53,6 +53,9 @@
 .admin-logo-img--pu { border: 2px solid #d4a017; box-shadow: 0 0 0 2px rgba(212, 160, 23, 0.25); }
 .admin-logo-img--department { border: 2px solid rgba(255, 255, 255, 0.35); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15); }
 
+/* ---------- Mobile bar: hidden on desktop, styled in the mobile query ---------- */
+.admin-mobile-bar { display: none; }
+
 /* ---------- Nav toggle (mobile only) ---------- */
 .admin-nav-toggle {
   display: none;
@@ -107,6 +110,7 @@
 @media (max-width: 768px) {
   .admin-shell { flex-direction: column; }
   .admin-mobile-bar {
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
