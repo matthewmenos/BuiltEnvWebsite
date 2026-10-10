@@ -125,6 +125,7 @@
     box-shadow: 0 2px 8px rgba(15, 53, 78, 0.25);
   }
   .admin-mobile-bar .admin-nav-logos { display: flex; align-items: center; gap: 10px; }
+  .admin-nav-toggle { display: flex; }
   .admin-logo-text { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; text-align: center; }
   .admin-sidebar {
     position: fixed;
@@ -152,6 +153,7 @@
   .admin-logo-img { width: 34px; height: 34px; border-radius: 6px; }
   .admin-logo-img--pu { border-color: #d4a017; box-shadow: none; }
   .admin-logo-img--department { border-color: rgba(15, 53, 78, 0.3); box-shadow: none; }
+  .admin-main { padding: 70px 16px 32px; }
 }
 /* ============================================================
    Buttons (icon-aligned; overrides base.css .btn)
@@ -320,7 +322,7 @@
 
 @media (max-width: 640px) {
   .admin-form .form-grid { grid-template-columns: 1fr; }
-  .admin-main { padding: 20px 12px 28px; }
+  .admin-main { padding: 64px 12px 28px; }
   .admin-form-actions { flex-direction: column; }
   .admin-form-actions .btn { width: 100%; justify-content: center; }
   .table-actions { flex-direction: column; }
