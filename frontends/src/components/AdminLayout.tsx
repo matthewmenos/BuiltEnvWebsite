@@ -74,6 +74,37 @@ const AdminLayout: React.FC = () => {
     <div className="admin-shell">
       {/* Hide the admin sidebar on the login page — visitors without a
           session should only see the login card. */}
+      {/* Mobile top bar — brand + hamburger toggle. */}
+      <div className="admin-mobile-bar">
+        <div className="admin-nav-logos">
+          <DualLogos
+            imgClassName="admin-logo-img"
+            puClassName="admin-logo-img--pu"
+            departmentClassName="admin-logo-img--department"
+            puAlt="PU logo"
+            departmentAlt="Department logo"
+          />
+        </div>
+        <span className="admin-logo-text">Admin Panel</span>
+        <button
+          className="admin-nav-toggle"
+          type="button"
+          aria-label={
+            menuOpen ? 'Close navigation menu' : 'Open navigation menu'
+          }
+          aria-expanded={menuOpen}
+          aria-controls="admin-menu"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? (
+            <X size={22} aria-hidden="true" />
+          ) : (
+            <Menu size={22} aria-hidden="true" />
+          )}
+        </button>
+      </div>
+
+      {/* Fixed left drawer — slides in from the left edge. */}
       {isAuthenticated && (
         <aside
           className={`admin-sidebar${menuOpen ? ' is-open' : ''}`}
@@ -90,22 +121,6 @@ const AdminLayout: React.FC = () => {
               />
             </div>
             <span className="admin-logo-text">Admin Panel</span>
-            <button
-              className="admin-nav-toggle"
-              type="button"
-              aria-label={
-                menuOpen ? 'Close navigation menu' : 'Open navigation menu'
-              }
-              aria-expanded={menuOpen}
-              aria-controls="admin-menu"
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              {menuOpen ? (
-                <X size={22} aria-hidden="true" />
-              ) : (
-                <Menu size={22} aria-hidden="true" />
-              )}
-            </button>
           </div>
           <nav
             className="admin-nav-links"
