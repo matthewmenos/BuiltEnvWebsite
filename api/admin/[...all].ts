@@ -141,8 +141,44 @@ export default function handler(
   res: VercelResponse
 ): Promise<void> {
   const q = req.query as Record<string, string | string[] | undefined>;
-  const rawAll = q.all;
-  const segments = Array.isArray(rawAll) ? rawAll : rawAll ? [rawAll] : [];
+  // Vercel exposes the catch-all param under `all`, but the dashboard shows
+  // the key as `...all` — accept every plausible spelling, then fall back to
+  // parsing the URL path so routing never depends on the query-key format.
+  const candidates: Array<string | string[] | undefined> = [
+    q.all,
+    (q as Record<string, unknown>)['...all'] as string | string[] | undefined,
+    (q as Record<string, unknown>)['…all'] as string | string[] | undefined,
+  ];
+  let segments: string[] = [];
+  for (const c of candidates) {
+    if (Array.isArray(c) && c.length > 0) {
+      segments = c;
+      break;
+    }
+    if (typeof c === 'string' && c.length > 0) {
+      segments = c.split('/').filter(Boolean);
+      break;
+    }
+  }
+  if (segments.length === 0) {
+    const urlPath = (req.url || '').split('?')[0] ?? '';
+    const parts = urlPath.split('/').filter(Boolean);
+    const adminIdx = parts.lastIndexOf('admin');
+    if (adminIdx >= 0) {
+      segments = parts.slice(adminIdx + 1);
+    }
+  }
+  // Strip any incidental query-key artefacts (e.g. a literal "...all" prefix
+  // leaking through) and URI-decode segments.
+  segments = segments
+    .map((s) => {
+      try {
+        return decodeURIComponent(s);
+      } catch {
+        return s;
+      }
+    })
+    .filter((s) => s.length > 0 && s !== '...all' && s !== '…all');
   const resource = segments[0];
   const pathId = segments[1];
   // Expose the path-style id as ?id= so handleResource.getId() finds it.
