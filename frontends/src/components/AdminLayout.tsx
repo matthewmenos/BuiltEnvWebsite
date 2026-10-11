@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   Bell,
   MailOpen,
+  Download,
   LogOut,
   Menu,
   X,
@@ -29,6 +30,7 @@ const adminLinks = [
   { label: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
   { label: 'Notices', path: '/admin/notices', icon: Bell },
   { label: 'Research', path: '/admin/research', icon: GraduationCap },
+  { label: 'Resource Files', path: '/admin/resource-files', icon: Download },
   { label: 'Contacts', path: '/admin/contacts', icon: MailOpen },
 ];
 

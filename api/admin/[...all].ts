@@ -8,6 +8,7 @@ import {
   notices as noticesTable,
   programmes as programmesTable,
   researchAreas as researchAreasTable,
+  resourceFiles as resourceFilesTable,
   siteSettings as siteSettingsTable,
   staff as staffTable,
 } from '../../lib/db';
@@ -144,6 +145,22 @@ const RESOURCES: Record<string, ResourceConfig> = {
       title: body.title,
       description: body.description,
       icon: body.icon || 'microscope',
+      sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
+      active:
+        body.active === undefined
+          ? true
+          : body.active === true || body.active === 'true',
+    }),
+  },
+  'resource-files': {
+    table: resourceFilesTable,
+    defaultLimit: 100,
+    required: ['title', 'fileUrl'],
+    buildValues: (body) => ({
+      title: body.title,
+      description: body.description || '',
+      category: body.category || 'downloads',
+      fileUrl: body.fileUrl ?? body.image ?? '',
       sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
       active:
         body.active === undefined

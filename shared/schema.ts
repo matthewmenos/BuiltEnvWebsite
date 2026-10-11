@@ -94,6 +94,17 @@ export interface IResearchArea {
   active: boolean;
 }
 
+/** Downloadable resource file (timetable / internship / downloads). */
+export interface IResourceFile {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  fileUrl: string;
+  sortOrder: number;
+  active: boolean;
+}
+
 /** Single site-wide setting (contact info, office hours, etc.). */
 export interface ISiteSetting {
   key: string;
@@ -279,6 +290,23 @@ export const homeSlides = pgTable('home_slides', {
   id: text('id').primaryKey(),
   imageUrl: text('image_url').notNull(),
   altText: text('alt_text').notNull().default(''),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/** Downloadable resource files grouped by category (Timetable / Internship / Downloads). */
+export const resourceFiles = pgTable('resource_files', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull().default(''),
+  category: text('category').notNull().default('downloads'),
+  fileUrl: text('file_url').notNull(),
   sortOrder: integer('sort_order').notNull().default(0),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true })

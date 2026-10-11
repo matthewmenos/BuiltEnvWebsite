@@ -22,6 +22,7 @@ import Gallery from './pages/Gallery';
 import GalleryDetail from './pages/GalleryDetail';
 import Research from './pages/Research';
 import Resources from './pages/Resources';
+import NoticeDetail from './pages/NoticeDetail';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -32,6 +33,7 @@ import AdminStaff from './pages/AdminStaff';
 import AdminStaffForm from './pages/AdminStaffForm';
 import AdminGallery from './pages/AdminGallery';
 import AdminNotices from './pages/AdminNotices';
+import AdminResourceFiles from './pages/AdminResourceFiles';
 import AdminContacts from './pages/AdminContacts';
 import AdminResourceForm from './pages/AdminResourceForm';
 import AdminHomeSlides from './pages/AdminHomeSlides';
@@ -61,6 +63,7 @@ function App() {
             <Route path="staff/:id" element={<StaffDetail />} />
             <Route path="research" element={<Research />} />
             <Route path="resources" element={<Resources />} />
+            <Route path="resources/notices/:id" element={<NoticeDetail />} />
             <Route path="gallery" element={<Gallery />} />
             <Route path="gallery/:id" element={<GalleryDetail />} />
             <Route path="contact" element={<Contact />} />
@@ -250,6 +253,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminResourceForm resource="notices" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="resource-files"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceFiles />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="resource-files/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="resource-files" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="resource-files/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="resource-files" />
                 </ProtectedRoute>
               }
             />

@@ -234,6 +234,19 @@
 .resource-files { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
 .resource-files span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--color-primary); }
 
+/* Clickable notices + file links on the public Resources page */
+.resource-notice-link {
+  display: flex; flex-direction: column; gap: 2px;
+  color: inherit; text-decoration: none; border-radius: 4px;
+  transition: color 0.15s ease;
+}
+.resource-notice-link:hover { color: var(--color-primary); text-decoration: none; }
+.resource-notice-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.resource-file-link { display: inline-flex; align-items: center; color: var(--color-primary); text-decoration: none; border-radius: 4px; }
+.resource-file-link:hover span { text-decoration: underline; }
+.resource-file-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.resource-files-empty { margin-top: 12px; font-size: 13px; color: var(--color-text-light); font-style: italic; }
+
 /* Contact strip */
 .contact-strip { display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: center; }
 .contact-strip .section-title { color: #ffffff; }

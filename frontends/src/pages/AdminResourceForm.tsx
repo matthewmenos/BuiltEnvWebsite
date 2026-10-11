@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
@@ -6,6 +6,7 @@ import { useConfirm } from '../context/ConfirmContext';
 import { useToast } from '../context/ToastContext';
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import ImageUpload from '../components/ImageUpload';
+import FileUpload from '../components/FileUpload';
 
 type ResourceKey =
   | 'programmes'
@@ -14,12 +15,13 @@ type ResourceKey =
   | 'gallery'
   | 'notices'
   | 'home-slides'
-  | 'research';
+  | 'research'
+  | 'resource-files';
 
 interface Field {
   name: string;
   label: string;
-  type?: 'text' | 'textarea' | 'datetime-local' | 'select' | 'image' | 'number';
+  type?: 'text' | 'textarea' | 'datetime-local' | 'select' | 'image' | 'number' | 'file';
   required?: boolean;
   rows?: number;
   placeholder?: string;
@@ -168,6 +170,19 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       { name: 'active', label: 'Active', type: 'select', options: [ { value: 'true', label: 'Yes' }, { value: 'false', label: 'No' } ] },
     ],
   },
+  'resource-files': {
+    titleSingular: 'Resource File',
+    listPath: '/admin/resource-files',
+    description: 'Downloadable files (timetables, handbooks, forms) shown on the public Resources page. Pick a Category so the file appears under the right card. Required fields are marked with *.',
+    fields: [
+      { name: 'title', label: 'Title *', required: true },
+      { name: 'category', label: 'Category *', type: 'select', required: true, options: [ { value: 'timetable', label: 'Timetable' }, { value: 'internship', label: 'Internship' }, { value: 'downloads', label: 'Downloads' } ] },
+      { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
+      { name: 'fileUrl', label: 'File *', type: 'file', required: true },
+      { name: 'sortOrder', label: 'Display order', type: 'number', placeholder: 'e.g. 0' },
+      { name: 'active', label: 'Active', type: 'select', options: [ { value: 'true', label: 'Yes' }, { value: 'false', label: 'No' } ] },
+    ],
+  },
 };
 const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) => {
   const config = RESOURCES[resource];
@@ -278,6 +293,9 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
           }
           if (f.type === 'image') {
             return <ImageUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText='Upload an image file (PNG, JPG or WebP up to 200 MB).' />;
+          }
+          if (f.type === 'file') {
+            return <FileUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText='Upload any file type (PDF, DOCX, XLSX, image, etc. up to 200 MB).' />;
           }
           return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><input id={fieldId} name={f.name} type={f.type ?? 'text'} value={value} onChange={handleChange} required={f.required} placeholder={f.placeholder} /></div>;
         })}
