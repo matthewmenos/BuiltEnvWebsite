@@ -8,8 +8,10 @@
  * metadata. The server returns a stable id; that id becomes a public URL
  * served by `/api/uploads/<id>`.
  *
- * If presigning fails (e.g. R2 unreachable from the API), we fall back to the
- * old base64-proxied upload, which is capped at ~3 MB by Vercel's body limit.
+ * If the direct-to-R2 path fails — presigning errors (R2 unreachable from the
+ * API) OR the browser's cross-origin PUT being blocked by a missing CORS policy
+ * on the bucket (see R2-CORS.md) — we fall back to the old base64-proxied
+ * upload, which is capped at ~3 MB by Vercel's body limit.
  */
 
 /** Read a File/Blob into a `data:<mime>;base64,...` string (fallback path). */
@@ -28,6 +30,14 @@ export function readFileAsDataUrl(file: File): Promise<string> {
  * multi-gigabyte picks. Raise or remove this if you need larger files.
  */
 export const MAX_UPLOAD_BYTES = 200 * 1024 * 1024; // 200 MB
+
+/**
+ * Ceiling for the base64-proxied fallback. Vercel caps request bodies at ~4.5 MB
+ * and base64 inflates ~4/3, so a 3 MB file lands at ~4 MB on the wire — the
+ * largest that reliably fits. Files above this must use the direct-to-R2 path,
+ * which needs the bucket CORS policy configured (R2-CORS.md).
+ */
+export const PROXIED_FALLBACK_MAX_BYTES = 3 * 1024 * 1024;
 
 export interface UploadedFile {
   id: string;
@@ -179,12 +189,29 @@ export async function uploadFile(
   try {
     return await uploadPresigned(file, token);
   } catch (err) {
-    // If presigning itself failed (no uploadUrl / R2 unreachable from the
-    // API), retry via the proxied path so small uploads still work.
+    // The direct-to-R2 upload can fail two ways: the presign call itself (R2
+    // unreachable from the API), or the browser's cross-origin PUT to R2 — a
+    // missing CORS policy surfaces here as `TypeError: Failed to fetch`, and a
+    // rejected upload as a non-2xx status. The proxied fallback goes through our
+    // own origin, so it is immune to R2 CORS, but is capped by Vercel's body
+    // limit. Retry there whenever the file fits; otherwise surface a hint.
+    if (file.size <= PROXIED_FALLBACK_MAX_BYTES) {
+      try {
+        return await uploadProxied(file, token);
+      } catch (fallbackErr) {
+        console.warn('[upload] direct upload failed:', err);
+        console.warn('[upload] proxied fallback failed:', fallbackErr);
+        throw fallbackErr;
+      }
+    }
     const message = err instanceof Error ? err.message : String(err);
-    const presignFailed = /could not start upload/i.test(message);
-    if (presignFailed && file.size <= 3 * 1024 * 1024) {
-      return uploadProxied(file, token);
+    if (/failed to fetch|networkerror|upload to storage failed/i.test(message)) {
+      throw new Error(
+        'Direct upload to storage was blocked or failed. This is usually a ' +
+          'missing CORS policy on the R2 bucket — see R2-CORS.md to allow ' +
+          'uploads from this origin, or use a file under 3 MB, which uploads ' +
+          'via the server instead.'
+      );
     }
     throw err;
   }
