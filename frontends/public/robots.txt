@@ -1,0 +1,12 @@
+# robots.txt — Department of Built Environment, Pentecost University
+# https://builtenv.vercel.app/robots.txt
+#
+# Public content is open to all crawlers; the admin dashboard is private.
+
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# Dynamic sitemap: all public index pages plus DB-backed detail pages
+# (programmes, news, events, staff, gallery, live notices).
+Sitemap: https://builtenv.vercel.app/sitemap.xml

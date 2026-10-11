@@ -67,4 +67,12 @@ export const env = {
   get nodeEnv(): string {
     return read('NODE_ENV') || 'production';
   },
+  /**
+   * Public origin of the site (no trailing slash). Used by the sitemap
+   * function to build absolute URLs; lets a custom domain be adopted via an
+   * env var instead of a code change.
+   */
+  get siteUrl(): string {
+    return read('SITE_URL') || 'https://builtenv.vercel.app';
+  },
 };
