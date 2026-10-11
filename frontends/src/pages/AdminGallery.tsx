@@ -180,7 +180,7 @@ const AdminGallery: React.FC = () => {
         <div className="upload-text">
           {uploading ? 'Uploading' : 'Drag & drop images here'}
         </div>
-        <div className="upload-hint">PNG, JPG or WebP up to 3 MB each.</div>
+        <div className="upload-hint">PNG, JPG or WebP up to 200 MB each.</div>
       </div>
 
       {loading ? (

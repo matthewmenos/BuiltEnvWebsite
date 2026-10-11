@@ -5,6 +5,7 @@ import { handleError, HttpError, readJsonBody, requireAuth, sendJson } from '../
 import {
   deleteR2Object,
   loadUploadRegistry,
+  presignUploadPut,
   putR2Object,
   saveUploadRegistry,
   uploadKey,
@@ -16,8 +17,21 @@ import {
 // filesystem — Vercel's serverless FS is read-only and ephemeral, which is
 // why the previous disk-based implementation lost files between deploys.
 
+// Two upload paths, both ending in the same R2 object + registry entry:
+//
+//  1. PRESIGNED (default, no practical size cap) — the browser asks this
+//     endpoint for a short-lived PUT URL (`action: 'presign'`), uploads bytes
+//     DIRECTLY to R2, then calls back (`action: 'register'`) to record
+//     metadata. Because the bytes never pass through Vercel, the 4.5 MB
+//     request-body limit does not apply — files can be arbitrarily large.
+//
+//  2. BASE64 FALLBACK — the old proxied path (JSON data URL → PUT from the
+//     function). Kept for tiny files / clients that can't reach R2 directly;
+//     still bounded by Vercel's body cap, hence MAX_BYTES below.
+
 // Vercel caps request bodies at 4.5 MB and base64 inflates ~4/3, so a 3 MB
-// file lands at ~4 MB on the wire — the largest that reliably fits.
+// file lands at ~4 MB on the wire — the largest that reliably fits the
+// *fallback* path. The presigned path is not subject to this.
 const MAX_BYTES = 3 * 1024 * 1024;
 
 interface IncomingFile {
@@ -107,6 +121,51 @@ export default async function handler(
     if (req.method === 'POST') {
       requireAuth(req);
       const body = await readJsonBody<Record<string, unknown>>(req);
+      const action = typeof body.action === 'string' ? body.action : undefined;
+
+      // --- Presign: reserve an id/key and return a short-lived PUT URL. ---
+      if (action === 'presign') {
+        const id = randomUUID();
+        const { uploadUrl, expiresIn } = await presignUploadPut(id);
+        sendJson(res, 200, {
+          id,
+          uploadUrl,
+          expiresIn,
+          // Stable public URL the rest of the app stores once the PUT lands.
+          publicUrl: `/api/uploads/${id}`,
+        });
+        return;
+      }
+
+      // --- Register: record metadata after the client's direct R2 PUT. ---
+      if (action === 'register') {
+        const id = typeof body.id === 'string' ? body.id.trim() : '';
+        if (!id) throw new HttpError(400, 'Missing id');
+        const key = uploadKey(id); // validates id (throws 400 on bad input)
+        const name = typeof body.name === 'string' && body.name ? body.name : id;
+        const mimeType =
+          typeof body.mimeType === 'string' && body.mimeType
+            ? body.mimeType
+            : 'application/octet-stream';
+        const size = Number.isFinite(Number(body.size)) ? Number(body.size) : 0;
+        const entry: StoredFile = {
+          id,
+          name,
+          mimeType,
+          size,
+          uploadedAt: new Date().toISOString(),
+          key,
+        };
+        const registry = await loadUploadRegistry();
+        // Idempotent: a re-register (retry) updates rather than duplicates.
+        const existing = registry.findIndex((f) => f.id === id);
+        if (existing >= 0) registry[existing] = entry;
+        else registry.push(entry);
+        await saveUploadRegistry(registry);
+        sendJson(res, 201, { item: entry });
+        return;
+      }
+
       const incoming = normalizeFiles(body);
       if (incoming.length === 0) {
         sendJson(res, 400, { error: 'No files uploaded' });

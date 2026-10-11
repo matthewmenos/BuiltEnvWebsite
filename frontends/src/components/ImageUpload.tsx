@@ -25,7 +25,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   token,
   label = 'Image',
   required = false,
-  helpText = 'PNG, JPG or WebP up to 3 MB.',
+  helpText = 'PNG, JPG or WebP up to 200 MB.',
   name,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);

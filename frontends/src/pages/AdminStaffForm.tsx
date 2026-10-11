@@ -161,7 +161,7 @@ const AdminStaffForm: React.FC = () => {
               setForm((prev) => ({ ...prev, image: url }));
               setDirty(true);
             }}
-            helpText="Upload a portrait photo (PNG, JPG or WebP up to 3 MB)."
+            helpText="Upload a portrait photo (PNG, JPG or WebP up to 200 MB)."
           />
         </div>
         <div className="form-group">

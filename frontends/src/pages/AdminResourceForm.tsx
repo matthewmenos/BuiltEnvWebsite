@@ -277,7 +277,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
             return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><select id={fieldId} name={f.name} value={value} onChange={handleChange} required={f.required}>{(f.options ?? []).map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>;
           }
           if (f.type === 'image') {
-            return <ImageUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText='Upload an image file (PNG, JPG or WebP up to 3 MB).' />;
+            return <ImageUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText='Upload an image file (PNG, JPG or WebP up to 200 MB).' />;
           }
           return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><input id={fieldId} name={f.name} type={f.type ?? 'text'} value={value} onChange={handleChange} required={f.required} placeholder={f.placeholder} /></div>;
         })}

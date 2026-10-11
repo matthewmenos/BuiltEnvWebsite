@@ -96,7 +96,36 @@ function encodeKey(key: string): string {
 
 function objectUrl(key: string): string {
   const { endpoint, bucket } = r2Config();
-  return `${endpoint}/${encodeURIComponent(bucket)}/${encodeKey(key)}`;
+  return `${endpoint}/${bucket}/${encodeKey(key)}`;
+}
+
+/**
+ * Mint a presigned PUT URL so the browser uploads bytes DIRECTLY to R2,
+ * bypassing the serverless request-body cap (~4.5 MB on Vercel) that forced
+ * the old 3 MB limit. The signature is body-independent (UNSIGNED-PAYLOAD),
+ * so we never see the file — we only reserve the id/key and register metadata
+ * after the client confirms the PUT succeeded.
+ *
+ * The returned URL is single-purpose (PUT one object) and short-lived.
+ */
+export async function presignUploadPut(
+  id: string,
+  opts: { expiresIn?: number } = {}
+): Promise<{ uploadUrl: string; key: string; expiresIn: number }> {
+  const key = uploadKey(id); // validates the id (no key traversal)
+  const client = r2Client();
+  // Clamp to S3's allowed range (60s … 7 days); default 2h — ample for a large
+  // file on a slow connection while limiting exposure if a URL ever leaks.
+  const expiresIn = Math.min(Math.max(opts.expiresIn ?? 7200, 60), 604800);
+  // Seed X-Amz-Expires in the query so aws4fetch signs it instead of using
+  // its 24h default.
+  const base = objectUrl(key);
+  const seed = `${base}?X-Amz-Expires=${expiresIn}`;
+  const signed = await client.sign(seed, {
+    method: 'PUT',
+    aws: { signQuery: true },
+  });
+  return { uploadUrl: signed.url, key, expiresIn };
 }
 
 /**
