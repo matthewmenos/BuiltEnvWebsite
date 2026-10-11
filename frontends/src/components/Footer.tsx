@@ -70,6 +70,8 @@ const Footer: React.FC = () => {
         </div>
         <div className="footer-bottom">
           <p>&copy; {new Date().getFullYear()} Department of Built Environment, Pentecost University. All rights reserved.</p>
+          <br />
+          <a href="https://menositconsult.com" target="_blank" rel="noopener noreferrer">Powered By: Menos iT Consult</a>
         </div>
       </div>
     </footer>

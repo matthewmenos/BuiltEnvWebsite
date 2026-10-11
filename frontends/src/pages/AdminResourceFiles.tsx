@@ -61,7 +61,7 @@ const AdminResourceFiles: React.FC = () => {
     setError('');
     setRemovingId(item.id);
     try {
-      const res = await fetch(`/api/admin/resource-files/${item.id}`, {
+      const res = await fetch(`/api/admin/resource-files?id=${encodeURIComponent(item.id)}`, {
         method: 'DELETE',
         headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       });

@@ -43,7 +43,7 @@ const AdminStaffForm: React.FC = () => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`/api/admin/staff/${id}`, {
+        const res = await fetch(`/api/admin/staff?id=${encodeURIComponent(id)}`, {
           headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         });
         if (!res.ok) return;
@@ -86,7 +86,7 @@ const AdminStaffForm: React.FC = () => {
     setStatus('saving');
     try {
       const response = await fetch(
-        isNew ? '/api/admin/staff' : `/api/admin/staff/${id}`,
+        isNew ? '/api/admin/staff' : `/api/admin/staff?id=${encodeURIComponent(id)}`,
         {
           method: isNew ? 'POST' : 'PUT',
           headers: {

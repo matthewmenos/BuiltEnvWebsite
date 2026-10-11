@@ -43,9 +43,12 @@ async function fetchItem<T extends { id: string }>(
   endpoint: string,
   id: string
 ): Promise<T | null> {
-  // Prefer the direct GET /<endpoint>/<id> if the backend supports it…
+  // Query-param id: Vercel's edge does not route /api/admin/<resource>/<id>
+  // to the [...all] catch-all (it 404s at the platform level), but
+  // handleResource.getId() reads req.query.id first — so single-segment
+  // URLs with ?id= are the only shape that reliably reaches the function.
   try {
-    const direct = await fetch(`${endpoint}/${encodeURIComponent(id)}`);
+    const direct = await fetch(`${endpoint}?id=${encodeURIComponent(id)}`);
     if (direct.ok) {
       const data = await direct.json().catch(() => ({}));
       const item = (data as { item?: T }).item;

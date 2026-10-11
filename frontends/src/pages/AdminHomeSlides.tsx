@@ -66,7 +66,7 @@ const AdminHomeSlides: React.FC = () => {
     setError('');
     setRemovingId(slide.id);
     try {
-      const res = await fetch(`/api/admin/home-slides/${slide.id}`, {
+      const res = await fetch(`/api/admin/home-slides?id=${encodeURIComponent(slide.id)}`, {
         method: 'DELETE',
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),

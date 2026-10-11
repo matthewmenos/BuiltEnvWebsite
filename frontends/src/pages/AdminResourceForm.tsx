@@ -226,7 +226,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`${apiPath}/${id}`, {
+        const res = await fetch(`${apiPath}?id=${encodeURIComponent(id)}`, {
           headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         });
         if (res.status === 404) { if (!cancelled) setNotFound(true); return; }
@@ -255,7 +255,7 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
     try {
       const headers = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
       const send = (method: string, url: string) => fetch(url, { method, headers, body: JSON.stringify(formToPayload(form, config.fields)) });
-      let response = await send(isNew ? 'POST' : 'PUT', isNew ? apiPath : `${apiPath}/${id}`);
+      let response = await send(isNew ? 'POST' : 'PUT', isNew ? apiPath : `${apiPath}?id=${encodeURIComponent(id)}`);
       if (!isNew && response.status === 404) { response = await send('POST', apiPath); }
       const data = await response.json().catch(() => ({})) as { error?: string };
       if (!response.ok) { throw new Error(data.error || 'Save failed'); }

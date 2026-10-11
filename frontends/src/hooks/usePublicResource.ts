@@ -96,9 +96,9 @@ export function usePublicItem<T extends { id: string }>(
     setNotFound(false);
     (async () => {
       try {
-        const direct = await fetch(
-          `${endpoint}/${encodeURIComponent(id)}?limit=1`
-        );
+        // Query-param id: path-style /<endpoint>/<id> is 404'd by Vercel's
+        // edge before it reaches the catch-all function (see publicApi.ts).
+        const direct = await fetch(`${endpoint}?id=${encodeURIComponent(id)}`);
         if (direct.ok) {
           const data = await direct.json().catch(() => ({}));
           if (cancelled) return;

@@ -64,7 +64,7 @@ const AdminNews: React.FC = () => {
     setError('');
     setRemovingId(item.id);
     try {
-      const res = await fetch(`/api/admin/news/${item.id}`, {
+      const res = await fetch(`/api/admin/news?id=${encodeURIComponent(item.id)}`, {
         method: 'DELETE',
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),

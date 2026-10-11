@@ -63,7 +63,7 @@ const AdminContacts: React.FC = () => {
     setError('');
     setRemovingId(item.id);
     try {
-      const res = await fetch(`/api/admin/contacts/${item.id}`, {
+      const res = await fetch(`/api/admin/contacts?id=${encodeURIComponent(item.id)}`, {
         method: 'DELETE',
         headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       });
