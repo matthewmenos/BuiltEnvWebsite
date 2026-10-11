@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
 import { IBreadcrumb, IProgramme } from 'shared/schema';
 import { publicApi } from '../lib/publicApi';
+import { mediaUrl } from '../lib/upload';
 import { TableSkeleton } from '../components/Skeleton';
 
 const breadcrumbs: IBreadcrumb[] = [
@@ -73,7 +74,7 @@ const Programmes: React.FC = () => {
           programmes.map((programme: IProgramme) => (
           <Link to={`/programmes/${programme.id}`} className="card programme-card" key={programme.id}>
             <div className="programme-image">
-              <img src={programme.image} alt={programme.title} />
+              <img src={mediaUrl(programme.image)} alt={programme.title} loading="lazy" decoding="async" />
             </div>
             <div className="programme-content">
               <span className="badge badge-primary">{programme.shortCode}</span>

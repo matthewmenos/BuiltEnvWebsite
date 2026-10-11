@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { IGalleryItem } from 'shared/schema';
 import { usePublicList } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { CardGridSkeleton } from '../components/Skeleton';
 
 /**
@@ -50,7 +51,7 @@ const Gallery: React.FC = () => {
         {gallery.map((item: IGalleryItem) => (
           <Link to={`/gallery/${item.id}`} className="gallery-item" key={item.id}>
             <div className="gallery-image">
-              <img src={item.image} alt={item.title} />
+              <img src={mediaUrl(item.image)} alt={item.title} loading="lazy" decoding="async" />
             </div>
             <div className="gallery-overlay">
               <h3 className="gallery-title">{item.title}</h3>

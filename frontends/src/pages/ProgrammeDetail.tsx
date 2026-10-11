@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { IBreadcrumb, IProgramme } from 'shared/schema';
 import { usePublicItem } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { Skeleton } from '../components/Skeleton';
 
 const breadcrumbs: IBreadcrumb[] = [
@@ -70,7 +71,7 @@ const ProgrammeDetail: React.FC = () => {
       <div className="programme-detail">
         <div className="programme-detail-header">
           <div className="programme-detail-image">
-            <img src={programme.image} alt={programme.title} />
+            <img src={mediaUrl(programme.image)} alt={programme.title} fetchPriority="high" decoding="async" />
           </div>
           <div className="programme-detail-content">
             <span className="badge badge-primary">{programme.shortCode}</span>

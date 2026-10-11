@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import { IEvent } from 'shared/schema';
 import { usePublicItem } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { Skeleton } from '../components/Skeleton';
 
 const EventDetail: React.FC = () => {
@@ -46,7 +47,7 @@ const EventDetail: React.FC = () => {
 
       <div className="event-detail">
         <div className="event-detail-image">
-          <img src={event.image} alt={event.title} />
+          <img src={mediaUrl(event.image)} alt={event.title} fetchPriority="high" decoding="async" />
         </div>
         <div className="event-detail-content">
           <div className="event-detail-meta">

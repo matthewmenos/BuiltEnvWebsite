@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { IStaff } from 'shared/schema';
 import { usePublicList } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { CardGridSkeleton } from '../components/Skeleton';
 
 const Staff: React.FC = () => {
@@ -31,7 +32,7 @@ const Staff: React.FC = () => {
         {members.map((member: IStaff) => (
           <Link to={`/staff/${member.id}`} className="card staff-card" key={member.id}>
             <div className="staff-image">
-              <img src={member.image} alt={member.name} />
+              <img src={mediaUrl(member.image)} alt={member.name} loading="lazy" decoding="async" />
             </div>
             <div className="staff-content">
               <h3 className="staff-name">{member.name}</h3>

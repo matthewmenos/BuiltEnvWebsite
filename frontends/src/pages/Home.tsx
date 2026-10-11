@@ -12,6 +12,7 @@ import { FALLBACK_SETTINGS, publicApi, type SiteSettings } from '../lib/publicAp
 import { IStaff } from 'shared/schema';
 import NoticeBar from '../components/NoticeBar';
 import { getVideoEmbed } from '../lib/embed';
+import { mediaUrl } from '../lib/upload';
 
 interface HomeSlide {
   id: string;
@@ -142,12 +143,14 @@ const Home: React.FC = () => {
               aria-hidden={i === slideIndex ? undefined : true}
             >
               <img
-                src={slide.imageUrl}
+                src={mediaUrl(slide.imageUrl)}
                 alt={
                   i === slideIndex
                     ? slide.altText || 'Department of Built Environment'
                     : ''
                 }
+                fetchPriority={i === slideIndex ? 'high' : 'low'}
+                decoding="async"
               />
             </div>
           ))}
@@ -215,7 +218,7 @@ const Home: React.FC = () => {
         </div>
         <div className="card hod-card">
           <div className="hod-photo">
-            <img src={hod.image} alt={hod.name} />
+            <img src={mediaUrl(hod.image)} alt={hod.name} loading="lazy" decoding="async" />
           </div>
           <div className="hod-body">
             <h3>{hod.name}</h3>

@@ -49,6 +49,31 @@ export function uploadUrl(id: string): string {
   return `/api/uploads/${id}`;
 }
 
+/**
+ * Base URL of the R2 public bucket/custom domain, baked in at build time from
+ * VITE_R2_PUBLIC_URL. When set, uploaded media can be referenced DIRECTLY at
+ * the CDN edge instead of going through `/api/uploads/<id>` (which invokes a
+ * serverless function + 302 on every image load). Empty -> use the proxy path.
+ */
+const CDN_BASE = (import.meta.env.VITE_R2_PUBLIC_URL || '').replace(/\/+$/, '');
+
+/**
+ * Resolve a stored media reference to the fastest URL:
+ *  - `/api/uploads/<id>`  ->  `<CDN>/uploads/<id>` when a CDN base is set,
+ *                            otherwise the proxy URL (unchanged behaviour).
+ *  - anything else (already-absolute URLs, seed assets, empty) passes through.
+ *
+ * This lets `<img src>` hit Cloudflare's edge directly, skipping the Vercel
+ * function hop that made media feel slow — without changing how/where files
+ * are stored.
+ */
+export function mediaUrl(url: string): string {
+  if (!url || !CDN_BASE) return url;
+  const m = /^\/api\/uploads\/([^/?#]+)/.exec(url);
+  if (!m) return url;
+  return `${CDN_BASE}/uploads/${m[1]}`;
+}
+
 function authHeaders(token: string | null): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { IGalleryItem } from 'shared/schema';
 import { usePublicItem } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { Skeleton } from '../components/Skeleton';
 
 type GalleryRow = IGalleryItem & {
@@ -58,7 +59,7 @@ const GalleryDetail: React.FC = () => {
 
       <div className="gallery-detail">
         <div className="gallery-detail-image">
-          <img src={item.image} alt={item.title} />
+          <img src={mediaUrl(item.image)} alt={item.title} fetchPriority="high" decoding="async" />
         </div>
         <div className="gallery-detail-content">
           <p>{item.description}</p>

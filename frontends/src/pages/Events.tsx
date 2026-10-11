@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
 import { IEvent } from 'shared/schema';
 import { usePublicList } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { CardGridSkeleton } from '../components/Skeleton';
 
 const Events: React.FC = () => {
@@ -31,7 +32,7 @@ const Events: React.FC = () => {
         {events.map((event: IEvent) => (
           <Link to={`/events/${event.id}`} className="card event-card" key={event.id}>
             <div className="event-image">
-              <img src={event.image} alt={event.title} />
+              <img src={mediaUrl(event.image)} alt={event.title} loading="lazy" decoding="async" />
             </div>
             <div className="event-content">
               <span className="badge badge-primary">{event.category}</span>

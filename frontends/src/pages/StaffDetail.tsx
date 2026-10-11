@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { IStaff } from 'shared/schema';
 import { usePublicItem } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { Skeleton } from '../components/Skeleton';
 
 const StaffDetail: React.FC = () => {
@@ -45,7 +46,7 @@ const StaffDetail: React.FC = () => {
 
       <div className="staff-detail">
         <div className="staff-detail-image">
-          <img src={member.image} alt={member.name} />
+          <img src={mediaUrl(member.image)} alt={member.name} fetchPriority="high" decoding="async" />
         </div>
         <div className="staff-detail-content">
           <span className="badge badge-primary">{member.position}</span>

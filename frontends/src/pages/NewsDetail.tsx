@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { IBreadcrumb, INews } from 'shared/schema';
 import { usePublicItem } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { Skeleton } from '../components/Skeleton';
 
 const breadcrumbs: IBreadcrumb[] = [
@@ -83,7 +84,7 @@ const NewsDetail: React.FC = () => {
           <h1 className="news-article-title">{article.title}</h1>
         </div>
         <div className="news-article-image">
-          <img src={article.image} alt={article.title} />
+          <img src={mediaUrl(article.image)} alt={article.title} fetchPriority="high" decoding="async" />
         </div>
         <div className="news-article-body">
           <p>{article.body}</p>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { INews } from 'shared/schema';
 import { usePublicList } from '../hooks/usePublicResource';
+import { mediaUrl } from '../lib/upload';
 import { CardGridSkeleton } from '../components/Skeleton';
 
 const News: React.FC = () => {
@@ -38,7 +39,7 @@ const News: React.FC = () => {
         {articles.map((article: INews) => (
           <Link to={`/news/${article.id}`} className="card news-card" key={article.id}>
             <div className="news-image">
-              <img src={article.image} alt={article.title} />
+              <img src={mediaUrl(article.image)} alt={article.title} loading="lazy" decoding="async" />
             </div>
             <div className="news-content">
               <span className="badge badge-primary">{article.category}</span>
