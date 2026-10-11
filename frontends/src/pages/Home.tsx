@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { FALLBACK_SETTINGS, publicApi, type SiteSettings } from '../lib/publicApi';
 import { IStaff } from 'shared/schema';
+import NoticeBar from '../components/NoticeBar';
+import { getVideoEmbed } from '../lib/embed';
 
 interface HomeSlide {
   id: string;
@@ -20,6 +22,16 @@ interface HomeSlide {
 }
 
 const SLIDE_INTERVAL_MS = 6000;
+
+// Default hero copy used when nothing is set in Admin > Homepage Settings.
+const FALLBACK_HERO = {
+  eyebrow: 'Pentecost University - Sowutuom, Accra',
+  title: 'Building the future of the built environment',
+  subtitle:
+    'Quantity Surveying, Construction, Architecture and Planning - taught through faith-driven scholarship, industry practice and research.',
+};
+const FALLBACK_VIDEO_TITLE = 'Welcome to the Department';
+
 
 const FALLBACK_HOD: IStaff = {
   id: 'hod',
@@ -106,8 +118,16 @@ const Home: React.FC = () => {
   const nextSlide = () =>
     setSlideIndex((i) => (i + 1) % slides.length);
 
+  const heroEyebrow = settings.heroEyebrow || FALLBACK_HERO.eyebrow;
+  const heroTitle = settings.heroTitle || FALLBACK_HERO.title;
+  const heroSubtitle = settings.heroSubtitle || FALLBACK_HERO.subtitle;
+  const videoEmbed = getVideoEmbed(settings.videoUrl || '');
+  const videoTitle = settings.videoTitle || FALLBACK_VIDEO_TITLE;
+
   return (
     <div className="home">
+      {/* Announcements (managed in Admin > Notices) */}
+      <NoticeBar />
       {/* 1 — HERO WITH BACKGROUND CAROUSEL */}
       <section
         className="hero"
@@ -169,17 +189,9 @@ const Home: React.FC = () => {
 
         <div className="container hero-container">
           <div className="hero-content">
-            <p className="hero-eyebrow">
-              Pentecost University &middot; Sowutuom, Accra
-            </p>
-            <h1 className="hero-title">
-              Building the future of the built environment
-            </h1>
-            <p className="hero-subtitle">
-              Quantity Surveying, Construction, Architecture and Planning —
-              taught through faith-driven scholarship, industry practice and
-              research.
-            </p>
+            <p className="hero-eyebrow">{heroEyebrow}</p>
+            <h1 className="hero-title">{heroTitle}</h1>
+            <p className="hero-subtitle">{heroSubtitle}</p>
             <div className="hero-actions">
               <Link to="/programmes" className="btn btn-primary">
                 Explore Programmes <ArrowRight size={16} aria-hidden="true" />
@@ -220,6 +232,27 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* 2.5 - INTRO VIDEO (managed in Admin > Homepage Settings) */}
+      {videoEmbed && (
+        <section className="container home-section video-section">
+          <div className="section-head">
+            <h2 className="section-title">{videoTitle}</h2>
+          </div>
+          <div className="video-frame">
+            {videoEmbed.kind === 'file' ? (
+              <video src={videoEmbed.src} controls preload="metadata" playsInline />
+            ) : (
+              <iframe
+                src={videoEmbed.src}
+                title={videoTitle}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+          </div>
+        </section>
+      )}
 
       {/* 3 — CONTACT CTA BAND */}
       <section className="home-band">

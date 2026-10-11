@@ -35,6 +35,7 @@ import AdminNotices from './pages/AdminNotices';
 import AdminContacts from './pages/AdminContacts';
 import AdminResourceForm from './pages/AdminResourceForm';
 import AdminHomeSlides from './pages/AdminHomeSlides';
+import AdminHomeSettings from './pages/AdminHomeSettings';
 
 // Placeholder pages
 import Placeholder from './pages/Placeholder';
@@ -81,6 +82,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminHomeSlides />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="home-settings"
+              element={
+                <ProtectedRoute>
+                  <AdminHomeSettings />
                 </ProtectedRoute>
               }
             />

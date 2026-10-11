@@ -1,4 +1,61 @@
 /* Home page: hero, sections, HOD, bands, resources, contact strip — also shared feature cards (Research & Resources pages) */
+
+/* ── Announcement notice bar ─────────────────────────────────── */
+.notice-bar {
+  background: var(--color-primary-dark);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.notice-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 24px;
+}
+.notice-bar-icon { display: inline-flex; color: var(--color-secondary); flex-shrink: 0; }
+.notice-bar-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--color-secondary); color: #2a2205; flex-shrink: 0;
+}
+.notice-bar-content { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.notice-bar-title { font-size: 14px; font-weight: 700; }
+.notice-bar-text { font-size: 13px; color: #d7e9f1; }
+.notice-bar-next,
+.notice-bar-close {
+  background: transparent; border: none; color: #d7e9f1; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: var(--radius); flex-shrink: 0;
+  transition: background var(--transition), color var(--transition);
+}
+.notice-bar-next:hover,
+.notice-bar-close:hover { background: rgba(255, 255, 255, 0.14); color: #ffffff; }
+
+/* ── Intro video section ─────────────────────────────────────── */
+.video-section .section-title { color: var(--color-primary-dark); }
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 12px 32px rgba(15, 61, 78, 0.18);
+}
+.video-frame iframe,
+.video-frame video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0; display: block;
+}
+@media (max-width: 640px) {
+  .notice-bar-inner { padding: 8px 16px; }
+  .notice-bar-label { display: none; }
+  .notice-bar-text { display: none; }
+}
+
 .home { display: block; }
 .home-section { padding-top: 40px; padding-bottom: 40px; }
 .container.home-section { padding-top: 40px; padding-bottom: 40px; }

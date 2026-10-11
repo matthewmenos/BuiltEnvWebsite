@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   X,
+  Settings,
 } from 'lucide-react';
 import DualLogos from './DualLogos';
 import { useAuth } from '../context/ThemeContext';
@@ -20,6 +21,7 @@ import { useAuth } from '../context/ThemeContext';
 const adminLinks = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Homepage Slides', path: '/admin/home', icon: House },
+  { label: 'Homepage Settings', path: '/admin/home-settings', icon: Settings },
   { label: 'Programmes', path: '/admin/programmes', icon: GraduationCap },
   { label: 'News', path: '/admin/news', icon: Newspaper },
   { label: 'Events', path: '/admin/events', icon: CalendarDays },
