@@ -147,7 +147,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
   },
   'home-slides': {
     titleSingular: 'Homepage Slide',
-    listPath: '/admin/home-slides',
+    listPath: '/admin/home',
     description: 'Slides rotate as the homepage hero background. Required fields are marked with *.',
     fields: [
       { name: 'imageUrl', label: 'Image *', type: 'image', required: true },
