@@ -11,8 +11,8 @@ export const programmes: IProgramme[] = [
     duration: '12 months (full-time)',
     admission:
       '2:2 honours degree in a relevant engineering or construction discipline, or equivalent professional experience.',
-    euFees: '£15,500',
-    nonEuFees: '£26,000',
+    euFees: '₵15,500',
+    nonEuFees: '₵26,000',
     accreditation: 'APC accredited – routes to Chartered Surveyor status',
     structure:
       'Core modules include: Construction Technology, Contract Law, Cost Planning, Risk Management, and Project Management. Final assessment includes a dissertation.',
@@ -29,8 +29,8 @@ export const programmes: IProgramme[] = [
     duration: '12 months (full-time)',
     admission:
       '2:2 honours degree in construction, engineering, architecture, or related field.',
-    euFees: '£15,500',
-    nonEuFees: '£27,000',
+    euFees: '₵15,500',
+    nonEuFees: '₵27,000',
     accreditation: 'JCT and RICS aligned curriculum',
     structure:
       'Core modules include: Construction Methods, Project Planning, Cost Management, Health & Safety, and Research Methods. Optional modules allow specialisation in digital construction or sustainable building.',
@@ -47,8 +47,8 @@ export const programmes: IProgramme[] = [
     duration: '18 months (full-time, with placement year)',
     admission:
       'Strong portfolio required. A 2:1 honours degree in architecture or a closely related discipline.',
-    euFees: '£20,000',
-    nonEuFees: '£32,000',
+    euFees: '₵20,000',
+    nonEuFees: '₵32,000',
     accreditation: 'RICS and ARB accredited',
     structure:
       'Studio-based learning across three years, plus technical modules in building services, structures, and sustainability. The placement year provides professional experience.',
@@ -65,8 +65,8 @@ export const programmes: IProgramme[] = [
     duration: '12 months (full-time)',
     admission:
       '2:2 honours degree in a relevant discipline, or equivalent professional experience in planning or related field.',
-    euFees: '£15,500',
-    nonEuFees: '£26,500',
+    euFees: '₵15,500',
+    nonEuFees: '₵26,500',
     accreditation: 'RTPI accredited',
     structure:
       'Core modules include: Planning Theory, Urban Regeneration, Housing Policy, Environmental Policy, and Research Methods. The final project allows you to focus on a specific area of interest.',

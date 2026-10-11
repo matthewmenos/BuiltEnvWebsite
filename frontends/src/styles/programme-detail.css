@@ -17,6 +17,7 @@
 }
 .programme-detail-section h2 { font-size: 18px; color: var(--color-primary); margin-bottom: 8px; }
 .fee-label { font-weight: 700; }
+.fee-note { font-size: 13px; color: var(--color-text-light); font-style: italic; margin-bottom: 10px; }
 .programme-detail-body, .programme-detail-content, .programme-detail-header { min-width: 0; }
 .programme-detail-footer { margin-top: 24px; }
 

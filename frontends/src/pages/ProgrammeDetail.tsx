@@ -93,12 +93,13 @@ const ProgrammeDetail: React.FC = () => {
 
           <div className="programme-detail-section">
             <h2>Fees</h2>
+            <p className="fee-note">All fees are quoted in Ghana Cedis (GHS).</p>
             <p>
-              <span className="fee-label">EU/UK:</span>{' '}
+              <span className="fee-label">Ghanaian students:</span>{' '}
               {programme.euFees}
             </p>
             <p>
-              <span className="fee-label">International:</span>{' '}
+              <span className="fee-label">International students:</span>{' '}
               {programme.nonEuFees}
             </p>
           </div>
