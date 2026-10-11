@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
-import { programmes as programmesData } from '../data/programmes';
 import { IBreadcrumb, IProgramme } from 'shared/schema';
+import { publicApi } from '../lib/publicApi';
+import { TableSkeleton } from '../components/Skeleton';
 
 const breadcrumbs: IBreadcrumb[] = [
   { label: 'Home', href: '/' },
@@ -10,6 +11,28 @@ const breadcrumbs: IBreadcrumb[] = [
 ];
 
 const Programmes: React.FC = () => {
+  const [programmes, setProgrammes] = useState<IProgramme[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    publicApi
+      .listProgrammes()
+      .then((items) => {
+        if (!cancelled) setProgrammes(items);
+      })
+      .catch((err: unknown) => {
+        if (!cancelled)
+          setError(err instanceof Error ? err.message : 'Could not load programmes');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   return (
     <div>
       <nav aria-label="breadcrumb">
@@ -38,7 +61,16 @@ const Programmes: React.FC = () => {
       </p>
 
       <div className="programmes-grid">
-        {programmesData.map((programme: IProgramme) => (
+        {loading ? (
+          <TableSkeleton rows={4} columns={1} />
+        ) : error ? (
+          <div className="login-error">{error}</div>
+        ) : programmes.length === 0 ? (
+          <div className="empty-state">
+            No programmes have been published yet. Please check back soon.
+          </div>
+        ) : (
+          programmes.map((programme: IProgramme) => (
           <Link to={`/programmes/${programme.id}`} className="card programme-card" key={programme.id}>
             <div className="programme-image">
               <img src={programme.image} alt={programme.title} />
@@ -63,7 +95,8 @@ const Programmes: React.FC = () => {
               </div>
             </div>
           </Link>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

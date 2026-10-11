@@ -83,6 +83,22 @@ export interface IGalleryItem {
   category: string;
   image: string;
 }
+
+/** Research area card shown on the public Research page (admin-managed). */
+export interface IResearchArea {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  sortOrder: number;
+  active: boolean;
+}
+
+/** Single site-wide setting (contact info, office hours, etc.). */
+export interface ISiteSetting {
+  key: string;
+  value: string;
+}
 /** Shared Drizzle schema (PostgreSQL tables) */
 
 import {
@@ -226,6 +242,34 @@ export const contacts = pgTable('contacts', {
   ipAddress: text('ip_address').notNull(),
   userAgent: text('user_agent').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/** Research area cards on the public Research page (admin-managed). */
+export const researchAreas = pgTable('research_areas', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  icon: text('icon').notNull().default('microscope'),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/**
+ * Site-wide settings (contact info, office hours, …) as key/value rows.
+ * The text PK is the setting key itself.
+ */
+export const siteSettings = pgTable('site_settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull().default(''),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
 });

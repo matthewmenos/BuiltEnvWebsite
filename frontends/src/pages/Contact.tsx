@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Clock, Mail, MapPin, Phone } from 'lucide-react';
+import { FALLBACK_SETTINGS, publicApi, type SiteSettings } from '../lib/publicApi';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,21 @@ const Contact: React.FC = () => {
     message: '',
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [sendError, setSendError] = useState('');
+  const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+    publicApi
+      .getSettings()
+      .then((s) => {
+        if (!cancelled) setSettings(s);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -19,12 +35,23 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
+    setSendError('');
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setStatus('sent');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    try {
+      await publicApi.submitContact(formData);
+      setStatus('sent');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      setStatus('error');
+      setSendError(
+        err instanceof Error ? err.message : 'Could not send message'
+      );
+    }
   };
+
+  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+    settings.mapQuery
+  )}&output=embed`;
 
   return (
     <div>
@@ -44,7 +71,7 @@ const Contact: React.FC = () => {
               </span>
               <div>
                 <strong>Address:</strong>
-                <p>Department of Built Environment, Pentecost University, Sowutuom, Accra, Ghana</p>
+                <p>{settings.address}</p>
               </div>
             </div>
             <div className="contact-item">
@@ -53,7 +80,7 @@ const Contact: React.FC = () => {
               </span>
               <div>
                 <strong>Telephone:</strong>
-                <p>+233 302 417 064</p>
+                <p>{settings.phone}</p>
               </div>
             </div>
             <div className="contact-item">
@@ -62,7 +89,7 @@ const Contact: React.FC = () => {
               </span>
               <div>
                 <strong>Email:</strong>
-                <p>info@pentvars.edu.gh</p>
+                <p>{settings.email}</p>
               </div>
             </div>
             <div className="contact-item">
@@ -71,7 +98,7 @@ const Contact: React.FC = () => {
               </span>
               <div>
                 <strong>Office Hours:</strong>
-                <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                <p>{settings.hours}</p>
               </div>
             </div>
           </div>
@@ -81,7 +108,7 @@ const Contact: React.FC = () => {
             <div className="map-wrapper">
               <iframe
                 title="Department location"
-                src="https://www.google.com/maps?q=Pentecost+University+Sowutuom+Accra+Ghana&output=embed"
+                src={mapSrc}
                 allowFullScreen
                 loading="lazy"
               />
@@ -149,7 +176,7 @@ const Contact: React.FC = () => {
               <p className="form-success">Your message has been sent successfully!</p>
             )}
             {status === 'error' && (
-              <p className="form-error">There was an error sending your message. Please try again.</p>
+              <p className="form-error">{sendError || 'There was an error sending your message. Please try again.'}</p>
             )}
           </form>
         </div>

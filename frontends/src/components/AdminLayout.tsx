@@ -23,9 +23,11 @@ const adminLinks = [
   { label: 'Programmes', path: '/admin/programmes', icon: GraduationCap },
   { label: 'News', path: '/admin/news', icon: Newspaper },
   { label: 'Events', path: '/admin/events', icon: CalendarDays },
-  { label: 'Staff', path: '/admin/staff', icon: Users },
   { label: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
   { label: 'Notices', path: '/admin/notices', icon: Bell },
+  { label: 'Research', path: '/admin/research', icon: GraduationCap },
+  { label: 'Homepage Slides', path: '/admin/home-slides', icon: ImageIcon },
+  { label: 'Site Settings', path: '/admin/site-settings', icon: Bell },
   { label: 'Contacts', path: '/admin/contacts', icon: MailOpen },
 ];
 

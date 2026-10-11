@@ -1,7 +1,8 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { news as newsData } from '../data/news';
 import { IBreadcrumb, INews } from 'shared/schema';
+import { usePublicItem } from '../hooks/usePublicResource';
+import { Skeleton } from '../components/Skeleton';
 
 const breadcrumbs: IBreadcrumb[] = [
   { label: 'Home', href: '/' },
@@ -11,9 +12,28 @@ const breadcrumbs: IBreadcrumb[] = [
 
 const NewsDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const article = newsData.find((n: INews) => n.id === id);
+  const {
+    item: article,
+    loading,
+    error,
+    notFound,
+  } = usePublicItem<INews>('/api/admin/news', id);
 
-  if (!article) {
+  if (loading) {
+    return (
+      <div>
+        <Skeleton width="40%" height={28} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={260} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={14} />
+        <div style={{ height: 8 }} />
+        <Skeleton width="90%" height={14} />
+      </div>
+    );
+  }
+
+  if (error || notFound || !article) {
     return (
       <div className="error-state">
         <h2>Article not found</h2>

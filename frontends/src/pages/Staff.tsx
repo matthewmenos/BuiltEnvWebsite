@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { staff as staffData } from '../data/staff';
 import { IStaff } from 'shared/schema';
+import { usePublicList } from '../hooks/usePublicResource';
+import { CardGridSkeleton } from '../components/Skeleton';
 
 const Staff: React.FC = () => {
+  const { items: members, loading, error } = usePublicList<IStaff>(
+    '/api/admin/staff',
+    100
+  );
+
   return (
     <div>
       <h1 className="page-title">Our Staff</h1>
@@ -12,8 +18,17 @@ const Staff: React.FC = () => {
         Built Environment a vibrant community of learning and research.
       </p>
 
+      {loading ? (
+        <CardGridSkeleton cards={6} />
+      ) : error ? (
+        <div className="login-error">{error}</div>
+      ) : members.length === 0 ? (
+        <div className="empty-state">
+          No staff profiles have been published yet. Please check back soon.
+        </div>
+      ) : (
       <div className="staff-grid">
-        {staffData.map((member: IStaff) => (
+        {members.map((member: IStaff) => (
           <Link to={`/staff/${member.id}`} className="card staff-card" key={member.id}>
             <div className="staff-image">
               <img src={member.image} alt={member.name} />
@@ -32,6 +47,7 @@ const Staff: React.FC = () => {
           </Link>
         ))}
       </div>
+      )}
     </div>
   );
 };

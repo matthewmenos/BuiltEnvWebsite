@@ -2,9 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
 import { IEvent } from 'shared/schema';
-import { events as eventsData } from '../data/events';
+import { usePublicList } from '../hooks/usePublicResource';
+import { CardGridSkeleton } from '../components/Skeleton';
 
 const Events: React.FC = () => {
+  const { items: events, loading, error } = usePublicList<IEvent>(
+    '/api/admin/events',
+    100
+  );
+
   return (
     <div>
       <h1 className="page-title">Events</h1>
@@ -12,8 +18,17 @@ const Events: React.FC = () => {
         Upcoming events, conferences, and seminars from the Department of Built Environment.
       </p>
 
+      {loading ? (
+        <CardGridSkeleton cards={6} />
+      ) : error ? (
+        <div className="login-error">{error}</div>
+      ) : events.length === 0 ? (
+        <div className="empty-state">
+          No events have been scheduled yet. Please check back soon.
+        </div>
+      ) : (
       <div className="events-grid">
-        {eventsData.map((event: IEvent) => (
+        {events.map((event: IEvent) => (
           <Link to={`/events/${event.id}`} className="card event-card" key={event.id}>
             <div className="event-image">
               <img src={event.image} alt={event.title} />
@@ -41,6 +56,7 @@ const Events: React.FC = () => {
           </Link>
         ))}
       </div>
+      )}
     </div>
   );
 };

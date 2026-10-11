@@ -7,6 +7,8 @@ import {
   news as newsTable,
   notices as noticesTable,
   programmes as programmesTable,
+  researchAreas as researchAreasTable,
+  siteSettings as siteSettingsTable,
   staff as staffTable,
 } from '../../lib/db';
 import { clientIp, handleResource, type ResourceConfig } from '../../lib/resource';
@@ -125,7 +127,7 @@ const RESOURCES: Record<string, ResourceConfig> = {
     defaultLimit: 20,
     required: ['imageUrl'],
     buildValues: (body) => ({
-      imageUrl: body.imageUrl,
+      imageUrl: body.imageUrl ?? body.image ?? '',
       altText: body.altText || '',
       sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
       active:
@@ -133,6 +135,28 @@ const RESOURCES: Record<string, ResourceConfig> = {
           ? true
           : body.active === true || body.active === 'true',
     }),
+  },
+  research: {
+    table: researchAreasTable,
+    defaultLimit: 50,
+    required: ['title', 'description'],
+    buildValues: (body) => ({
+      title: body.title,
+      description: body.description,
+      icon: body.icon || 'microscope',
+      sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
+      active:
+        body.active === undefined
+          ? true
+          : body.active === true || body.active === 'true',
+    }),
+  },
+  'site-settings': {
+    table: siteSettingsTable,
+    defaultLimit: 100,
+    required: [],
+    keyed: true,
+    buildValues: () => ({}),
   },
 };
 

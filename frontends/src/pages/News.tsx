@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { news as newsData } from '../data/news';
 import { INews } from 'shared/schema';
+import { usePublicList } from '../hooks/usePublicResource';
+import { CardGridSkeleton } from '../components/Skeleton';
 
 const News: React.FC = () => {
+  const { items: articles, loading, error } = usePublicList<INews>(
+    '/api/admin/news',
+    100
+  );
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-GB', {
       day: 'numeric',
@@ -19,8 +25,17 @@ const News: React.FC = () => {
         Latest news, announcements, and stories from the Department of Built Environment.
       </p>
 
+      {loading ? (
+        <CardGridSkeleton cards={6} />
+      ) : error ? (
+        <div className="login-error">{error}</div>
+      ) : articles.length === 0 ? (
+        <div className="empty-state">
+          No news articles have been published yet. Please check back soon.
+        </div>
+      ) : (
       <div className="news-grid">
-        {newsData.map((article: INews) => (
+        {articles.map((article: INews) => (
           <Link to={`/news/${article.id}`} className="card news-card" key={article.id}>
             <div className="news-image">
               <img src={article.image} alt={article.title} />
@@ -39,6 +54,7 @@ const News: React.FC = () => {
           </Link>
         ))}
       </div>
+      )}
     </div>
   );
 };

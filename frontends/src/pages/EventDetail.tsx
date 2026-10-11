@@ -2,13 +2,33 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import { IEvent } from 'shared/schema';
-import { events as eventsData } from '../data/events';
+import { usePublicItem } from '../hooks/usePublicResource';
+import { Skeleton } from '../components/Skeleton';
 
 const EventDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const event = eventsData.find((e: IEvent) => e.id === id);
+  const {
+    item: event,
+    loading,
+    error,
+    notFound,
+  } = usePublicItem<IEvent>('/api/admin/events', id);
 
-  if (!event) {
+  if (loading) {
+    return (
+      <div>
+        <Skeleton width="50%" height={28} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={260} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={14} />
+        <div style={{ height: 8 }} />
+        <Skeleton width="90%" height={14} />
+      </div>
+    );
+  }
+
+  if (error || notFound || !event) {
     return (
       <div className="error-state">
         <h2>Event not found</h2>

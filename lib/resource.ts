@@ -21,6 +21,11 @@ export interface ResourceConfig {
   buildValues: (body: Record<string, any>, req: VercelRequest) => Record<string, any>;
   /** If true, POST is public (e.g. contact form). Default: POST needs auth. */
   publicWrite?: boolean;
+  /**
+   * If true, the row PK is a caller-supplied key (site_settings.key) rather
+   * than a generated id: POST upserts by key and single-GET returns all rows.
+   */
+  keyed?: boolean;
 }
 
 /**
@@ -58,6 +63,24 @@ export async function handleResource(
 
     if (req.method === 'GET') {
       const db: any = getDb();
+      const id = getId();
+      // Single-item read: /api/admin/<resource>/<id> (used by the public
+      // detail pages). Keyed resources ignore the id and return all rows as
+      // a map — consumers index by key client-side.
+      if (id && !config.keyed) {
+        const rows = await db
+          .select()
+          .from(config.table)
+          .where(eq(config.table.id, id))
+          .limit(1);
+        const item = rows[0];
+        if (!item) {
+          sendJson(res, 404, { error: 'Not found' });
+          return;
+        }
+        sendJson(res, 200, { item });
+        return;
+      }
       const { limit, page, offset } = getPagination(req, config.defaultLimit);
       const [{ count: total }] = await db
         .select({ count: count() })
@@ -92,6 +115,36 @@ export async function handleResource(
         return;
       }
       const db: any = getDb();
+      // Keyed resources (site_settings): upsert one row per supplied key.
+      // Accepts { key, value } or { settings: { key: value, ... } }.
+      if (config.keyed) {
+        const entries: Array<[string, string]> = [];
+        if (body.settings && typeof body.settings === 'object') {
+          for (const [k, v] of Object.entries(body.settings)) {
+            entries.push([k, String(v ?? '')]);
+          }
+        } else if (typeof body.key === 'string' && body.key.length > 0) {
+          entries.push([body.key, String(body.value ?? '')]);
+        }
+        if (entries.length === 0) {
+          sendJson(res, 400, { error: 'Missing required fields', fields: ['settings'] });
+          return;
+        }
+        const items: any[] = [];
+        for (const [key, value] of entries) {
+          const [item] = await db
+            .insert(config.table)
+            .values({ key, value })
+            .onConflictDoUpdate({
+              target: config.table.key,
+              set: { value, updatedAt: new Date() },
+            })
+            .returning();
+          items.push(item);
+        }
+        sendJson(res, 200, { items });
+        return;
+      }
       const [item] = await db
         .insert(config.table)
         .values({ id: generateId(), ...config.buildValues(body, req) })

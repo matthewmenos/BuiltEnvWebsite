@@ -1,13 +1,33 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { IStaff } from 'shared/schema';
-import { staff as staffData } from '../data/staff';
+import { usePublicItem } from '../hooks/usePublicResource';
+import { Skeleton } from '../components/Skeleton';
 
 const StaffDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const member = staffData.find((s: IStaff) => s.id === id);
+  const {
+    item: member,
+    loading,
+    error,
+    notFound,
+  } = usePublicItem<IStaff>('/api/admin/staff', id);
 
-  if (!member) {
+  if (loading) {
+    return (
+      <div>
+        <Skeleton width="40%" height={28} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={260} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={14} />
+        <div style={{ height: 8 }} />
+        <Skeleton width="90%" height={14} />
+      </div>
+    );
+  }
+
+  if (error || notFound || !member) {
     return (
       <div className="error-state">
         <h2>Staff member not found</h2>

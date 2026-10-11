@@ -1,10 +1,28 @@
 import React from 'react';
 import { BookOpen, Bell, Briefcase, Download, FileText } from 'lucide-react';
-import { Notice as noticesData, type Notice } from '../data/notices';
+import { usePublicList } from '../hooks/usePublicResource';
+import { Skeleton } from '../components/Skeleton';
+
+interface NoticeRow {
+  id: string;
+  title: string;
+  body: string;
+  postedAt?: string;
+  expiresAt?: string | null;
+}
 
 const Resources: React.FC = () => {
-  const activeNotices: Notice[] = noticesData
-    .filter((n) => n.status === 'Active')
+  const { items, loading } = usePublicList<NoticeRow>(
+    '/api/admin/notices',
+    100
+  );
+  const now = Date.now();
+  const activeNotices = items
+    .filter((n) => !n.expiresAt || new Date(n.expiresAt).getTime() > now)
+    .sort(
+      (a, b) =>
+        new Date(b.postedAt ?? 0).getTime() - new Date(a.postedAt ?? 0).getTime()
+    )
     .slice(0, 6);
 
   return (
@@ -32,17 +50,25 @@ const Resources: React.FC = () => {
             <Bell size={28} aria-hidden="true" />
           </div>
           <h3 className="feature-title">Latest Notices</h3>
-          {activeNotices.length > 0 ? (
+          {loading ? (
+            <>
+              <Skeleton width="100%" height={14} />
+              <div style={{ height: 8 }} />
+              <Skeleton width="85%" height={14} />
+            </>
+          ) : activeNotices.length > 0 ? (
             <ul className="resource-list">
               {activeNotices.map((notice) => (
                 <li key={notice.id}>
                   <strong>{notice.title}</strong>
                   <span>
-                    {new Date(notice.date).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {notice.postedAt
+                      ? new Date(notice.postedAt).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })
+                      : ''}
                   </span>
                 </li>
               ))}

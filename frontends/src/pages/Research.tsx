@@ -1,29 +1,38 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, Building2, Microscope } from 'lucide-react';
+import {
+  ArrowRight,
+  Award,
+  Beaker,
+  BookOpen,
+  Building2,
+  FlaskConical,
+  Lightbulb,
+  Microscope,
+} from 'lucide-react';
+import { IResearchArea } from 'shared/schema';
+import { usePublicList } from '../hooks/usePublicResource';
+import { CardGridSkeleton } from '../components/Skeleton';
 
-const researchAreas = [
-  {
-    icon: Microscope,
-    title: 'Climate Resilience Lab',
-    description:
-      'Applied research on flood-resilient housing, heat-responsive design and infrastructure for Ghanaian cities.',
-  },
-  {
-    icon: Building2,
-    title: 'Materials Innovation',
-    description:
-      'Testing low-carbon binders, laterite composites and durable local materials for affordable construction.',
-  },
-  {
-    icon: Award,
-    title: 'Industry Partnerships',
-    description:
-      'Live briefs, guest studios and placement routes with quantity surveying, construction and planning firms.',
-  },
-];
+const ICONS: Record<string, React.ComponentType<{ size?: number | string; 'aria-hidden'?: boolean | 'true' | 'false' }>> = {
+  microscope: Microscope,
+  building: Building2,
+  award: Award,
+  beaker: Beaker,
+  flask: FlaskConical,
+  book: BookOpen,
+  lightbulb: Lightbulb,
+};
 
 const Research: React.FC = () => {
+  const { items, loading, error } = usePublicList<IResearchArea>(
+    '/api/admin/research',
+    50
+  );
+  const areas = items
+    .filter((a) => a.active !== false)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
   return (
     <div>
       <h1 className="page-title">Research &amp; Innovation</h1>
@@ -33,17 +42,30 @@ const Research: React.FC = () => {
         industry — from climate-resilient design to low-carbon materials.
       </p>
 
+      {loading ? (
+        <CardGridSkeleton cards={3} />
+      ) : error ? (
+        <div className="login-error">{error}</div>
+      ) : areas.length === 0 ? (
+        <div className="empty-state">
+          No research areas have been published yet. Please check back soon.
+        </div>
+      ) : (
       <div className="features-grid">
-        {researchAreas.map(({ icon: Icon, title, description }) => (
-          <div className="card feature-card" key={title}>
+        {areas.map((area) => {
+          const Icon = ICONS[(area.icon || '').toLowerCase()] ?? Microscope;
+          return (
+          <div className="card feature-card" key={area.id}>
             <div className="feature-icon">
               <Icon size={28} aria-hidden="true" />
             </div>
-            <h3 className="feature-title">{title}</h3>
-            <p className="feature-description">{description}</p>
+            <h3 className="feature-title">{area.title}</h3>
+            <p className="feature-description">{area.description}</p>
           </div>
-        ))}
+          );
+        })}
       </div>
+      )}
 
       <div className="research-cta">
         <p>

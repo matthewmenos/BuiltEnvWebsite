@@ -8,7 +8,8 @@ import {
   MapPin,
   Phone,
 } from 'lucide-react';
-import { staff as staffData } from '../data/staff';
+import { FALLBACK_SETTINGS, publicApi, type SiteSettings } from '../lib/publicApi';
+import { IStaff } from 'shared/schema';
 
 interface HomeSlide {
   id: string;
@@ -20,18 +21,42 @@ interface HomeSlide {
 
 const SLIDE_INTERVAL_MS = 6000;
 
+const FALLBACK_HOD: IStaff = {
+  id: 'hod',
+  name: 'Head of Department',
+  position: 'Head, Department of Built Environment',
+  department: 'Built Environment',
+  email: 'info@pentvars.edu.gh',
+  phone: '+233 302 417 064',
+  address: 'Pentecost University, Sowutuom, Accra, Ghana',
+  bio: '',
+  image: '/assets/logos/department-logo.jpg',
+};
+
 const Home: React.FC = () => {
-  const hod = staffData[0] ?? {
-    id: 'hod',
-    name: 'Head of Department',
-    position: 'Head, Department of Built Environment',
-    department: 'Built Environment',
-    email: 'info@pentvars.edu.gh',
-    phone: '+233 302 417 064',
-    address: 'Pentecost University, Sowutuom, Accra, Ghana',
-    bio: '',
-    image: '/assets/logos/department-logo.jpg',
-  };
+  const [hod, setHod] = useState<IStaff>(FALLBACK_HOD);
+  const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
+
+  // --- HOD card + contact band (admin-managed staff + site settings) ---
+  useEffect(() => {
+    let cancelled = false;
+    publicApi
+      .listStaff()
+      .then((members) => {
+        const first = members[0];
+        if (!cancelled && first) setHod(first);
+      })
+      .catch(() => {});
+    publicApi
+      .getSettings()
+      .then((s) => {
+        if (!cancelled) setSettings(s);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // --- Hero background carousel (managed in Admin → Homepage) ---
   const [slides, setSlides] = useState<HomeSlide[]>([]);
@@ -159,9 +184,9 @@ const Home: React.FC = () => {
               <Link to="/programmes" className="btn btn-primary">
                 Explore Programmes <ArrowRight size={16} aria-hidden="true" />
               </Link>
-              <Link to="/contact" className="btn btn-outline">
+              <a href="https://eportal.pentvars.edu.gh/pueportalonline/loginpin.php" className="btn btn-outline">
                 Apply Now
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -207,14 +232,13 @@ const Home: React.FC = () => {
             </p>
             <ul className="contact-strip-list">
               <li>
-                <Mail size={16} aria-hidden="true" /> info@pentvars.edu.gh
+                <Mail size={16} aria-hidden="true" /> {settings.email}
               </li>
               <li>
-                <Phone size={16} aria-hidden="true" /> +233 302 417 064
+                <Phone size={16} aria-hidden="true" /> {settings.phone}
               </li>
               <li>
-                <MapPin size={16} aria-hidden="true" /> Pentecost University,
-                Sowutuom, Accra, Ghana
+                <MapPin size={16} aria-hidden="true" /> {settings.address}
               </li>
             </ul>
           </div>

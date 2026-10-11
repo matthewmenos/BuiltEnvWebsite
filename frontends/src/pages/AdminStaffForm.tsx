@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { IStaff } from 'shared/schema';
-import { staff as staffData } from '../data/staff';
 import { useAuth } from '../context/ThemeContext';
 import { useConfirm } from '../context/ConfirmContext';
 import { useToast } from '../context/ToastContext';
@@ -39,23 +38,39 @@ const AdminStaffForm: React.FC = () => {
 
   useEffect(() => {
     setDirty(false);
-    if (!isNew && id) {
-      const existing = staffData.find((s: IStaff) => s.id === id);
-      if (existing) {
-        setForm({
-          name: existing.name,
-          position: existing.position,
-          department: existing.department,
-          email: existing.email,
-          phone: existing.phone,
-          address: existing.address,
-          bio: existing.bio,
-          welcomeMessage: existing.welcomeMessage ?? '',
-          image: existing.image,
+    if (isNew || !id) return;
+    // Prefill from the API so editing reflects live DB data, not seed files.
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/admin/staff/${id}`, {
+          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         });
+        if (!res.ok) return;
+        const data = (await res.json().catch(() => ({}))) as Partial<IStaff> & {
+          item?: Partial<IStaff>;
+        };
+        const existing = (data.item ?? data) as Partial<IStaff>;
+        if (cancelled || !existing || !existing.name) return;
+        setForm({
+          name: existing.name ?? '',
+          position: existing.position ?? '',
+          department: existing.department ?? 'Built Environment',
+          email: existing.email ?? '',
+          phone: existing.phone ?? '',
+          address: existing.address ?? '',
+          bio: existing.bio ?? '',
+          welcomeMessage: existing.welcomeMessage ?? '',
+          image: existing.image ?? '',
+        });
+      } catch {
+        // Leave the blank form; saving still works as a create.
       }
-    }
-  }, [id, isNew]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, isNew, token]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

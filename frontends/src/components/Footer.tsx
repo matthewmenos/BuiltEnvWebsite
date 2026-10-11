@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import DualLogos from './DualLogos';
+import { FALLBACK_SETTINGS, publicApi, type SiteSettings } from '../lib/publicApi';
 
 const Footer: React.FC = () => {
+  const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
+
+  useEffect(() => {
+    let cancelled = false;
+    publicApi
+      .getSettings()
+      .then((s) => {
+        if (!cancelled) setSettings(s);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   return (
     <footer className="footer">
       <div className="container">
@@ -40,15 +55,15 @@ const Footer: React.FC = () => {
             <ul>
               <li className="footer-contact-item">
                 <Mail size={16} aria-hidden="true" />
-                <a href="mailto:info@pentvars.edu.gh">info@pentvars.edu.gh</a>
+                <a href={`mailto:${settings.email}`}>{settings.email}</a>
               </li>
               <li className="footer-contact-item">
                 <Phone size={16} aria-hidden="true" />
-                <a href="tel:+233302417064">+233 302 417 064</a>
+                <a href={`tel:${settings.phone.replace(/[^+\d]/g, '')}`}>{settings.phone}</a>
               </li>
               <li className="footer-contact-item">
                 <MapPin size={16} aria-hidden="true" />
-                <span>Pentecost University, P.O. Box KN 1739, Accra, Ghana</span>
+                <span>{settings.address}</span>
               </li>
             </ul>
           </div>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { programmes as programmesData } from '../data/programmes';
 import { IBreadcrumb, IProgramme } from 'shared/schema';
+import { usePublicItem } from '../hooks/usePublicResource';
+import { Skeleton } from '../components/Skeleton';
 
 const breadcrumbs: IBreadcrumb[] = [
   { label: 'Home', href: '/' },
@@ -11,9 +12,30 @@ const breadcrumbs: IBreadcrumb[] = [
 
 const ProgrammeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const programme = programmesData.find((p: IProgramme) => p.id === id);
+  const {
+    item: programme,
+    loading,
+    error,
+    notFound,
+  } = usePublicItem<IProgramme>('/api/admin/programmes', id);
 
-  if (!programme) {
+  if (loading) {
+    return (
+      <div>
+        <Skeleton width="40%" height={28} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={220} />
+        <div style={{ height: 16 }} />
+        <Skeleton width="100%" height={14} />
+        <div style={{ height: 8 }} />
+        <Skeleton width="100%" height={14} />
+        <div style={{ height: 8 }} />
+        <Skeleton width="85%" height={14} />
+      </div>
+    );
+  }
+
+  if (error || notFound || !programme) {
     return (
       <div className="error-state">
         <h2>Programme not found</h2>
