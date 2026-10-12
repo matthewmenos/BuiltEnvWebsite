@@ -7,6 +7,7 @@ export const galleryItems: IGalleryItem[] = [
     description: 'Hands-on workshop exploring low-carbon construction materials.',
     category: 'Workshop',
     image: '/assets/gallery/workshop.jpg',
+    albumId: null,
   },
   {
     id: 'gal-2',
@@ -14,6 +15,7 @@ export const galleryItems: IGalleryItem[] = [
     description: 'Researchers presenting their latest work on sustainable urban development.',
     category: 'Symposium',
     image: '/assets/gallery/symposium.jpg',
+    albumId: null,
   },
   {
     id: 'gal-3',
@@ -21,6 +23,7 @@ export const galleryItems: IGalleryItem[] = [
     description: 'Innovative architectural designs from our final year students.',
     category: 'Exhibition',
     image: '/assets/gallery/design-showcase.jpg',
+    albumId: null,
   },
   {
     id: 'gal-4',
@@ -28,6 +31,7 @@ export const galleryItems: IGalleryItem[] = [
     description: 'Students learning Building Information Modelling in the digital lab.',
     category: 'Training',
     image: '/assets/gallery/bim-lab.jpg',
+    albumId: null,
   },
   {
     id: 'gal-5',
@@ -35,6 +39,7 @@ export const galleryItems: IGalleryItem[] = [
     description: 'Community engagement event for the Cabot Neighbourhood renewal project.',
     category: 'Project',
     image: '/assets/gallery/community.jpg',
+    albumId: null,
   },
   {
     id: 'gal-6',
@@ -42,5 +47,6 @@ export const galleryItems: IGalleryItem[] = [
     description: 'Guest lecture by a leading government architect from City Hall.',
     category: 'Lecture',
     image: '/assets/gallery/guest-lecture.jpg',
+    albumId: null,
   },
 ];

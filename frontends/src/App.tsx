@@ -20,6 +20,7 @@ import Staff from './pages/Staff';
 import StaffDetail from './pages/StaffDetail';
 import Gallery from './pages/Gallery';
 import GalleryDetail from './pages/GalleryDetail';
+import GalleryAlbum from './pages/GalleryAlbum';
 import Research from './pages/Research';
 import Resources from './pages/Resources';
 import NoticeDetail from './pages/NoticeDetail';
@@ -33,6 +34,8 @@ import AdminStaff from './pages/AdminStaff';
 import AdminStaffForm from './pages/AdminStaffForm';
 import AdminResearch from './pages/AdminResearch';
 import AdminGallery from './pages/AdminGallery';
+import AdminGalleryItems from './pages/AdminGalleryItems';
+import AdminGalleryAlbums from './pages/AdminGalleryAlbums';
 import AdminNotices from './pages/AdminNotices';
 import AdminResourceFiles from './pages/AdminResourceFiles';
 import AdminContacts from './pages/AdminContacts';
@@ -66,6 +69,7 @@ function App() {
             <Route path="resources" element={<Resources />} />
             <Route path="resources/notices/:id" element={<NoticeDetail />} />
             <Route path="gallery" element={<Gallery />} />
+            <Route path="gallery/albums/:id" element={<GalleryAlbum />} />
             <Route path="gallery/:id" element={<GalleryDetail />} />
             <Route path="contact" element={<Contact />} />
           </Route>
@@ -254,6 +258,38 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminResourceForm resource="gallery" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="gallery/items"
+              element={
+                <ProtectedRoute>
+                  <AdminGalleryItems />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="gallery/albums"
+              element={
+                <ProtectedRoute>
+                  <AdminGalleryAlbums />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="gallery/albums/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="gallery-albums" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="gallery/albums/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="gallery-albums" />
                 </ProtectedRoute>
               }
             />

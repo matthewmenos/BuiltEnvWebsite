@@ -75,6 +75,16 @@ export interface IStaff {
   image: string;
 }
 
+/** Gallery album (openable collection of photos) shown on the public Gallery page. */
+export interface IAlbum {
+  id: string;
+  title: string;
+  description: string;
+  coverImage: string;
+  sortOrder: number;
+  active: boolean;
+}
+
 /** Gallery item interface (shared between frontend and API) */
 export interface IGalleryItem {
   id: string;
@@ -82,6 +92,8 @@ export interface IGalleryItem {
   description: string;
   category: string;
   image: string;
+  /** Optional link to a parent album (gallery_albums.id). */
+  albumId: string | null;
 }
 
 /** Research area card shown on the public Research page (admin-managed). */
@@ -219,6 +231,24 @@ export const galleryImages = pgTable('gallery_images', {
   imageUrl: text('image_url').notNull(),
   credit: text('credit').notNull().default(''),
   featured: boolean('featured').notNull().default(false),
+  /** Optional parent album (gallery_albums.id); unassigned photos stay ungrouped. */
+  albumId: text('album_id'),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/** Gallery albums: openable collections of photos with a cover image. */
+export const galleryAlbums = pgTable('gallery_albums', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull().default(''),
+  coverImage: text('cover_image').notNull().default(''),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

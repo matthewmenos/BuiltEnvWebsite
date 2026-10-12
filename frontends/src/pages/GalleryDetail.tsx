@@ -26,6 +26,7 @@ const GalleryDetail: React.FC = () => {
         description: row.description,
         category: row.category || row.credit || '',
         image: row.image || row.imageUrl || '',
+        albumId: row.albumId ?? null,
       }
     : null;
 

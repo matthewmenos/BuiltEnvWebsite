@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import {
   contacts as contactsTable,
   events as eventsTable,
+  galleryAlbums as galleryAlbumsTable,
   galleryImages as galleryTable,
   homeSlides as homeSlidesTable,
   news as newsTable,
@@ -95,6 +96,22 @@ const RESOURCES: Record<string, ResourceConfig> = {
       imageUrl: body.imageUrl,
       credit: body.credit || '',
       featured: body.featured || false,
+      albumId: body.albumId || null,
+    }),
+  },
+  'gallery-albums': {
+    table: galleryAlbumsTable,
+    defaultLimit: 50,
+    required: ['title'],
+    buildValues: (body) => ({
+      title: body.title,
+      description: body.description || '',
+      coverImage: body.coverImage ?? body.image ?? '',
+      sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
+      active:
+        body.active === undefined
+          ? true
+          : body.active === true || body.active === 'true',
     }),
   },
   notices: {

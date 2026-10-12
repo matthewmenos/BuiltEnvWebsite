@@ -1,5 +1,6 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ImagePlus, Loader2, Trash2, Upload } from 'lucide-react';
 import { useAuth } from '../context/ThemeContext';
 import { useConfirm } from '../context/ConfirmContext';
@@ -136,6 +137,12 @@ const AdminGallery: React.FC = () => {
       <div className="admin-section-header">
         <h2>All Uploads</h2>
         <div className="section-actions">
+          <Link to="/admin/gallery/items" className="btn btn-outline">
+            Manage Items
+          </Link>
+          <Link to="/admin/gallery/albums" className="btn btn-outline">
+            Manage Albums
+          </Link>
           <label className="btn btn-primary">
             {uploading ? (
               <Loader2 size={15} className="spin" aria-hidden="true" />

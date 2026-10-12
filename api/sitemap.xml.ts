@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import {
   events as eventsTable,
+  galleryAlbums as galleryAlbumsTable,
   galleryImages as galleryTable,
   getDb,
   news as newsTable,
@@ -76,12 +77,13 @@ function detailEntries(
  */
 async function dynamicEntries(): Promise<UrlEntry[]> {
   const db = getDb();
-  const [programmes, news, events, staff, gallery, notices] = await Promise.allSettled([
+  const [programmes, news, events, staff, gallery, albums, notices] = await Promise.allSettled([
     db.select({ id: programmesTable.id, updatedAt: programmesTable.updatedAt }).from(programmesTable),
     db.select({ id: newsTable.id, updatedAt: newsTable.updatedAt }).from(newsTable),
     db.select({ id: eventsTable.id, updatedAt: eventsTable.updatedAt }).from(eventsTable),
     db.select({ id: staffTable.id, updatedAt: staffTable.updatedAt }).from(staffTable),
     db.select({ id: galleryTable.id, updatedAt: galleryTable.updatedAt }).from(galleryTable),
+    db.select({ id: galleryAlbumsTable.id, updatedAt: galleryAlbumsTable.updatedAt }).from(galleryAlbumsTable),
     // Expired notices drop off the public Resources page, so drop them here too.
     db
       .select({ id: noticesTable.id, updatedAt: noticesTable.updatedAt })
@@ -99,6 +101,7 @@ async function dynamicEntries(): Promise<UrlEntry[]> {
     ...detailEntries('/events', rows(events), '0.6', 'monthly'),
     ...detailEntries('/staff', rows(staff), '0.5', 'yearly'),
     ...detailEntries('/gallery', rows(gallery), '0.5', 'yearly'),
+    ...detailEntries('/gallery/albums', rows(albums), '0.6', 'monthly'),
     ...detailEntries('/resources/notices', rows(notices), '0.6', 'monthly'),
   ];
 }

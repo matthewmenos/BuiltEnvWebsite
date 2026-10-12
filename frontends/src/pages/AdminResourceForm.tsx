@@ -13,6 +13,7 @@ type ResourceKey =
   | 'news'
   | 'events'
   | 'gallery'
+  | 'gallery-albums'
   | 'notices'
   | 'home-slides'
   | 'research'
@@ -26,6 +27,10 @@ interface Field {
   rows?: number;
   placeholder?: string;
   options?: { value: string; label: string }[];
+  /** Select options fetched at runtime from this endpoint (expects { items: [{ id, title }] }). */
+  optionsUrl?: string;
+  /** Help text shown under image/file uploads. */
+  helpText?: string;
 }
 
 interface ResourceConfig {
@@ -126,7 +131,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
   },
   gallery: {
     titleSingular: 'Gallery Item',
-    listPath: '/admin/gallery',
+    listPath: '/admin/gallery/items',
     description: 'Gallery items appear on the public Gallery page. Required fields are marked with *.',
     fields: [
       { name: 'title', label: 'Title *', required: true },
@@ -134,6 +139,18 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       { name: 'category', label: 'Category', placeholder: 'e.g. Studio' },
       { name: 'description', label: 'Description', type: 'textarea', rows: 4 },
       { name: 'credit', label: 'Credit / photographer' },
+      { name: 'albumId', label: 'Album', type: 'select', optionsUrl: '/api/admin/gallery-albums?limit=100' },
+    ],
+  },
+  'gallery-albums': {
+    titleSingular: 'Gallery Album',
+    listPath: '/admin/gallery/albums',
+    description: 'Albums group gallery photos into openable collections. Assign photos to an album from the Gallery Item form.',
+    fields: [
+      { name: 'title', label: 'Title *', required: true },
+      { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
+      { name: 'coverImage', label: 'Cover image', type: 'image' },
+      { name: 'sortOrder', label: 'Display order', type: 'number', placeholder: '0 = first' },
     ],
   },
   notices: {
@@ -201,6 +218,45 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
   const [error, setError] = useState('');
   const [notFound, setNotFound] = useState(false);
   const [dirty, setDirty] = useState(false);
+
+  // Select options fetched at runtime (e.g. the album list for the photo form).
+  const [dynamicOptions, setDynamicOptions] = useState<
+    Record<string, { value: string; label: string }[]>
+  >({});
+
+  useEffect(() => {
+    const fields = config.fields.filter((f) => Boolean(f.optionsUrl));
+    if (fields.length === 0) {
+      setDynamicOptions({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      for (const f of fields) {
+        try {
+          const res = await fetch(f.optionsUrl!);
+          if (!res.ok) continue;
+          const data = (await res.json().catch(() => ({}))) as {
+            items?: { id: string; title?: string }[];
+          };
+          if (cancelled) return;
+          const items = Array.isArray(data.items) ? data.items : [];
+          setDynamicOptions((prev) => ({
+            ...prev,
+            [f.name]: items.map((i) => ({
+              value: String(i.id),
+              label: String(i.title || i.id),
+            })),
+          }));
+        } catch {
+          // Non-critical: render the select with just its "None" option.
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [config]);
 
   const { requestLeave } = useUnsavedChanges(dirty);
   const goToList = () => navigate(config.listPath);
@@ -289,13 +345,13 @@ const AdminResourceForm: React.FC<{ resource: ResourceKey }> = ({ resource }) =>
             return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><textarea id={fieldId} name={f.name} rows={f.rows ?? 4} value={value} onChange={handleChange} required={f.required} placeholder={f.placeholder} /></div>;
           }
           if (f.type === 'select') {
-            return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><select id={fieldId} name={f.name} value={value} onChange={handleChange} required={f.required}>{(f.options ?? []).map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>;
+            return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><select id={fieldId} name={f.name} value={value} onChange={handleChange} required={f.required}>{f.optionsUrl && !f.required && <option value=''>None</option>}{(f.options ?? dynamicOptions[f.name] ?? []).map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>;
           }
           if (f.type === 'image') {
-            return <ImageUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText='Upload an image file (PNG, JPG or WebP up to 200 MB).' />;
+            return <ImageUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText={f.helpText ?? 'Upload an image file (PNG, JPG or WebP up to 200 MB).'} />;
           }
           if (f.type === 'file') {
-            return <FileUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText='Upload any file type (PDF, DOCX, XLSX, image, etc. up to 200 MB).' />;
+            return <FileUpload key={f.name} label={f.label.replace(/\s*\*$/, '')} required={f.required} value={value} token={token} onChange={url => { setForm(prev => ({ ...prev, [f.name]: url })); setDirty(true); }} helpText={f.helpText ?? 'Upload any file type (PDF, DOCX, XLSX, image, etc. up to 200 MB).'} />;
           }
           return <div className='form-group' key={f.name}><label htmlFor={fieldId}>{f.label}</label><input id={fieldId} name={f.name} type={f.type ?? 'text'} value={value} onChange={handleChange} required={f.required} placeholder={f.placeholder} /></div>;
         })}
