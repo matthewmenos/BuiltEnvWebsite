@@ -237,6 +237,28 @@
 .admin-table tbody tr:last-child td { border-bottom: none; }
 .table-actions { display: flex; gap: 8px; align-items: center; }
 
+/* Contacts inbox — rows expand inline to reveal the full message. */
+.contact-row { cursor: pointer; }
+.contact-row.is-open { background: var(--color-accent); }
+.contact-detail-row:hover { background: transparent; }
+.contact-detail {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 6px 4px; white-space: normal;
+}
+.contact-detail-meta {
+  display: flex; gap: 8px 24px; flex-wrap: wrap;
+  font-size: 13px; color: var(--color-text-light);
+}
+.contact-detail-meta strong { color: var(--color-text); }
+.contact-detail-message {
+  font-size: 14px; line-height: 1.7; color: var(--color-text);
+  background: var(--color-background-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px 14px; margin: 0;
+  white-space: pre-wrap; overflow-wrap: break-word;
+}
+
 /* ============================================================
    Forms
    ============================================================ */

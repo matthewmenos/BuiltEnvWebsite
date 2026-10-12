@@ -7,6 +7,7 @@ const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: '',
   });
@@ -40,7 +41,7 @@ const Contact: React.FC = () => {
     try {
       await publicApi.submitContact(formData);
       setStatus('sent');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     } catch (err) {
       setStatus('error');
       setSendError(
@@ -139,6 +140,17 @@ const Contact: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+233 ..."
               />
             </div>
             <div className="form-group">

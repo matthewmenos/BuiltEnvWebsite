@@ -1,6 +1,6 @@
-/* Home page: hero, sections, HOD, bands, resources, contact strip — also shared feature cards (Research & Resources pages) */
+﻿/* Home page: hero, sections, HOD, bands, resources, contact strip â€” also shared feature cards (Research & Resources pages) */
 
-/* ── Announcement notice bar ─────────────────────────────────── */
+/* â”€â”€ Announcement notice bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .notice-bar {
   background: var(--color-primary-dark);
   color: #ffffff;
@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  max-width: var(--container-max);
+  max-width: 100%;
   margin: 0 auto;
   padding: 10px 24px;
 }
@@ -33,7 +33,7 @@
 .notice-bar-next:hover,
 .notice-bar-close:hover { background: rgba(255, 255, 255, 0.14); color: #ffffff; }
 
-/* ── Intro video section ─────────────────────────────────────── */
+/* â”€â”€ Intro video section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .video-section .section-title { color: var(--color-primary-dark); }
 .video-frame {
   position: relative;
@@ -60,6 +60,43 @@
 .home-section { padding-top: 40px; padding-bottom: 40px; }
 .container.home-section { padding-top: 40px; padding-bottom: 40px; }
 
+/* ————————————————————————————————————————————
+   Full-bleed Home bands: like the header/footer, section
+   backgrounds run edge-to-edge while inner content follows
+   the container width (now fluid on large screens).
+   main.container is the width cap, so bands break out of it
+   with the classic full-viewport-width technique.
+   ———————————————————————————————————————————— */
+.home-band {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-background-alt);
+}
+.home-band > .container.home-section {
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Hero is also full-bleed (its inner content uses .hero-container). */
+.hero {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+/* 100vw bands can exceed the viewport by the scrollbar width — clip the
+   overflow without breaking sticky positioning. */
+.home {
+  overflow-x: clip;
+  /* Pull the full-bleed hero flush against the navbar and the last band
+     flush against the footer (offsets main.container's padding). */
+  margin-top: -32px;
+  margin-bottom: -48px;
+}
+
 .section-head {
   display: flex; align-items: baseline; justify-content: space-between;
   gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
@@ -75,7 +112,12 @@
 .section-note { font-size: 13px; color: var(--color-text-light); }
 .section-lead { color: #d7e9f1; max-width: 560px; margin-top: 8px; }
 
-/* ── Hero with background carousel ─────────────────────────────── */
+/* Let lead copy breathe a little more once the container goes wide. */
+@media (min-width: 1600px) {
+  .section-lead { max-width: 720px; }
+}
+
+/* â”€â”€ Hero with background carousel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero {
   position: relative;
   display: flex;
@@ -97,7 +139,7 @@
   height: 100%;
   object-fit: cover;
 }
-/* Slow Ken Burns drift on the active slide so the hero always feels alive —
+/* Slow Ken Burns drift on the active slide so the hero always feels alive â€”
    even with a single image (nothing to rotate to). Resets on each activation. */
 .hero-slide.is-active img {
   animation: hero-kenburns 7s ease-out both;
@@ -194,8 +236,7 @@
 .hod-message { margin-bottom: 16px; }
 .hod-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-/* Alternating bands */
-.home-band { background: var(--color-background-alt); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+/* Alternating bands (base full-bleed geometry is defined near the top). */
 .home-band .home-section { padding-top: 40px; padding-bottom: 40px; }
 
 /* Resources */
@@ -280,3 +321,4 @@ section.home-band:has(.contact-strip) .section-lead { color: #d7e9f1; }
 @media (prefers-reduced-motion: reduce) {
   .hero-slide { transition: none; }
 }
+

@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --color-primary: #1a5f7a;
   --color-primary-dark: #0f3d4e;
   --color-secondary: #d4a017;
@@ -18,7 +18,7 @@
   /* Content column width. Grows on large monitors so the layout uses the
      full width instead of sitting in a narrow centered band (the footer
      background already extends edge-to-edge). Capped so text stays readable. */
-  --container-max: 1200px;
+
 }
 
 * {
@@ -60,23 +60,32 @@ img {
 
 /* Utility classes */
 .container {
-  max-width: var(--container-max);
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 20px;
 }
 
+/* Fluid content column: stays full-width with comfortable padding and keeps
+   growing on very large monitors, so page content expands edge-to-edge like
+   the header and footer backgrounds. Grids downstream are auto-fill, so they
+   reflow into extra columns instead of stretching. */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1600px;
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1920px;
+    padding: 0 48px;
+  }
+}
+
 /* Use more of the screen as displays get larger. Grids are auto-fit, so they
-   reflow into more columns instead of stretching — the layout fills wide
+   reflow into more columns instead of stretching - the layout fills wide
    monitors instead of leaving dead space on the sides. */
-@media (min-width: 1440px) {
-  :root { --container-max: 1360px; }
-}
-@media (min-width: 1720px) {
-  :root { --container-max: 1560px; }
-}
-@media (min-width: 2200px) {
-  :root { --container-max: 1800px; }
-}
 
 /* Buttons */
 .btn {
@@ -235,4 +244,6 @@ img {
     transform: translateY(0);
   }
 }
+
+
 

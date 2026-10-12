@@ -129,6 +129,7 @@ export const publicApi = {
     email: string;
     subject: string;
     message: string;
+    phone: string;
   }) => {
     const res = await fetch('/api/admin/contacts', {
       method: 'POST',

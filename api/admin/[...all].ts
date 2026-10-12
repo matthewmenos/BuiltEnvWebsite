@@ -111,13 +111,14 @@ const RESOURCES: Record<string, ResourceConfig> = {
   contacts: {
     table: contactsTable,
     defaultLimit: 50,
-    required: ['name', 'email', 'subject', 'message'],
+    required: ['name', 'email', 'message'],
     // Public endpoint — the contact form writes without a token.
     publicWrite: true,
     buildValues: (body, req) => ({
       name: body.name,
       email: body.email,
-      subject: body.subject,
+      phone: body.phone || '',
+      subject: body.subject || '',
       message: body.message,
       ipAddress: clientIp(req),
       userAgent: req.headers['user-agent'] || '',
