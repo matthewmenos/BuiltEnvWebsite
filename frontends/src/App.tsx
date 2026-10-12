@@ -31,7 +31,7 @@ import AdminNews from './pages/AdminNews';
 import AdminEvents from './pages/AdminEvents';
 import AdminStaff from './pages/AdminStaff';
 import AdminStaffForm from './pages/AdminStaffForm';
-import AdminGallery from './pages/AdminGallery';
+import AdminResearch from './pages/AdminResearch';
 import AdminNotices from './pages/AdminNotices';
 import AdminResourceFiles from './pages/AdminResourceFiles';
 import AdminContacts from './pages/AdminContacts';
@@ -209,10 +209,26 @@ function App() {
               }
             />
             <Route
-              path="gallery"
+              path="research"
               element={
                 <ProtectedRoute>
-                  <AdminGallery />
+                  <AdminResearch />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="research/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="research" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="research/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="research" />
                 </ProtectedRoute>
               }
             />
