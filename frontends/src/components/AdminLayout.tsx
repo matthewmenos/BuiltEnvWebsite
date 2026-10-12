@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   House,
   GraduationCap,
+  Microscope,
   Newspaper,
   CalendarDays,
   Users,
@@ -29,7 +30,7 @@ const adminLinks = [
   { label: 'Staff', path: '/admin/staff', icon: Users },
   { label: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
   { label: 'Notices', path: '/admin/notices', icon: Bell },
-  { label: 'Research', path: '/admin/research', icon: GraduationCap },
+  { label: 'Research', path: '/admin/research', icon: Microscope },
   { label: 'Resource Files', path: '/admin/resource-files', icon: Download },
   { label: 'Contacts', path: '/admin/contacts', icon: MailOpen },
 ];
