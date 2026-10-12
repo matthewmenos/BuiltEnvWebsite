@@ -32,6 +32,7 @@ import AdminEvents from './pages/AdminEvents';
 import AdminStaff from './pages/AdminStaff';
 import AdminStaffForm from './pages/AdminStaffForm';
 import AdminResearch from './pages/AdminResearch';
+import AdminGallery from './pages/AdminGallery';
 import AdminNotices from './pages/AdminNotices';
 import AdminResourceFiles from './pages/AdminResourceFiles';
 import AdminContacts from './pages/AdminContacts';
@@ -229,6 +230,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminResourceForm resource="research" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="gallery"
+              element={
+                <ProtectedRoute>
+                  <AdminGallery />
                 </ProtectedRoute>
               }
             />
