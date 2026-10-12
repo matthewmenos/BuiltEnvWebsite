@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { eq } from 'drizzle-orm';
 import {
   contacts as contactsTable,
   events as eventsTable,
@@ -113,6 +114,10 @@ const RESOURCES: Record<string, ResourceConfig> = {
           ? true
           : body.active === true || body.active === 'true',
     }),
+    // Deleting an album also deletes every photo assigned to it.
+    beforeDelete: async (id, db) => {
+      await db.delete(galleryTable).where(eq(galleryTable.albumId, id));
+    },
   },
   notices: {
     table: noticesTable,

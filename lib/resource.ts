@@ -26,6 +26,12 @@ export interface ResourceConfig {
    * than a generated id: POST upserts by key and single-GET returns all rows.
    */
   keyed?: boolean;
+  /**
+   * Optional hook run before the row itself is deleted, receiving the row id
+   * and the db handle. Used to cascade deletes (e.g. removing a gallery
+   * album's photos before the album row goes away).
+   */
+  beforeDelete?: (id: string, db: any) => Promise<void>;
 }
 
 /**
@@ -183,6 +189,11 @@ export async function handleResource(
         return;
       }
       const db: any = getDb();
+      // Cascade: let the config remove related rows (e.g. an album's photos)
+      // before deleting the row itself.
+      if (config.beforeDelete) {
+        await config.beforeDelete(id, db);
+      }
       const [item] = await db
         .delete(config.table)
         .where(eq(config.table.id, id))

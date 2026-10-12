@@ -59,7 +59,7 @@ const AdminGalleryAlbums: React.FC = () => {
 
   const handleDelete = async (item: AlbumRow) => {
     const ok = await confirm({
-      message: `Delete "${item.title}"? Photos are kept, but they will show up in All Photos instead.`,
+      message: `Delete "${item.title}"? This also deletes all photos assigned to this album. This cannot be undone.`,
       confirmLabel: 'Delete',
       tone: 'danger',
     });
@@ -74,7 +74,7 @@ const AdminGalleryAlbums: React.FC = () => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Delete failed');
       await load();
-      toast.success('Album deleted');
+      toast.success('Album and its photos deleted');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Delete failed';
       setError(message);
