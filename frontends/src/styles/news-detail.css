@@ -1,5 +1,8 @@
-/* News article */
+/* News article — narrow, readable column that still breathes on wide screens. */
 .news-article { max-width: 800px; margin: 0 auto 32px; }
+@media (min-width: 1600px) {
+  .news-article { max-width: 900px; }
+}
 .news-article-header { min-width: 0; }
 .news-article-title {
   font-size: 34px; font-family: var(--font-serif);

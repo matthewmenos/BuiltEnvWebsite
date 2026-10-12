@@ -1,6 +1,18 @@
-/* News listing */
+/* News listing — column count grows with the viewport. */
 .news-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
+  display: grid; grid-template-columns: 1fr; gap: 24px;
+}
+@media (min-width: 640px) {
+  .news-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .news-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1600px) {
+  .news-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 2100px) {
+  .news-grid { grid-template-columns: repeat(5, 1fr); }
 }
 .news-card {
   display: flex; flex-direction: column; overflow: hidden; padding: 0; color: inherit;

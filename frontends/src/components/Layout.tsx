@@ -10,7 +10,7 @@ const Layout: React.FC = () => {
       {/* Rewrites <title>/canonical/OG tags per public route (SPA SEO). */}
       <PageTitle />
       <Navbar />
-      <main className="container">
+      <main className="page-main">
         <Outlet />
       </main>
       <Footer />

@@ -65,10 +65,10 @@ img {
   padding: 0 20px;
 }
 
-/* Fluid content column: stays full-width with comfortable padding and keeps
-   growing on very large monitors, so page content expands edge-to-edge like
-   the header and footer backgrounds. Grids downstream are auto-fill, so they
-   reflow into extra columns instead of stretching. */
+/* Fluid content column: full-width with comfortable padding, growing on very
+   large monitors so page content expands like the header/footer. Matches the
+   .page-main shell ceiling (1920px). Grids downstream reflow into extra
+   columns instead of stretching. */
 @media (min-width: 1200px) {
   .container {
     max-width: 1600px;

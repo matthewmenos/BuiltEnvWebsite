@@ -1,6 +1,19 @@
-/* Programmes listing */
+/* Programmes listing — column count grows with the viewport so cards keep
+   a comfortable size while the grid fills wide screens. */
 .programmes-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
+  display: grid; grid-template-columns: 1fr; gap: 24px;
+}
+@media (min-width: 640px) {
+  .programmes-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .programmes-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1600px) {
+  .programmes-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 2100px) {
+  .programmes-grid { grid-template-columns: repeat(5, 1fr); }
 }
 .programme-card {
   display: flex; flex-direction: column; overflow: hidden; padding: 0; color: inherit;
