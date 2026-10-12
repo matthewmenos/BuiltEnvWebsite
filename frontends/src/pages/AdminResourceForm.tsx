@@ -94,6 +94,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       { name: 'shortCode', label: 'Short code *', required: true, placeholder: 'e.g. QS' },
       { name: 'faculty', label: 'Faculty *', required: true },
       { name: 'duration', label: 'Duration *', required: true, placeholder: 'e.g. 12 months (full-time)' },
+      { name: 'image', label: 'Cover image', type: 'image' },
       { name: 'description', label: 'Description *', type: 'textarea', rows: 5, required: true },
       { name: 'admission', label: 'Admission requirements', type: 'textarea', rows: 3 },
       { name: 'euFees', label: 'Ghanaian student fees (GHS)', placeholder: 'e.g. ₵15,500' },

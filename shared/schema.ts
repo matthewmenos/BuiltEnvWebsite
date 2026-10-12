@@ -160,6 +160,8 @@ export const programmes = pgTable('programmes', {
   nonEuFees: text('non_eu_fees').notNull(),
   accreditation: text('accreditation').notNull(),
   images: text('images').notNull().default('[]'),
+  /** Single cover image shown on the public card and detail header. */
+  image: text('image').notNull().default(''),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

@@ -41,6 +41,7 @@ const RESOURCES: Record<string, ResourceConfig> = {
       nonEuFees: body.nonEuFees,
       accreditation: body.accreditation,
       images: body.images || '[]',
+      image: body.image || '',
     }),
   },
   news: {

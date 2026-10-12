@@ -170,7 +170,7 @@ const AdminStaffForm: React.FC = () => {
         </div>
         <div className="form-group">
           <label htmlFor="bio">Biography *</label>
-          <textarea id="bio" name="bio" rows={5} value={form.bio} onChange={handleChange} required />
+          <textarea id="bio" name="bio" rows={5} value={form.bio} onChange={handleChange} />
         </div>
         <div className="form-group">
           <label htmlFor="welcomeMessage">Welcome message (HOD speech)</label>
