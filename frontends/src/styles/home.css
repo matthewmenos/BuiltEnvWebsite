@@ -77,7 +77,14 @@
 }
 a.award-chip:hover { opacity: 0.82; transform: translateY(-2px); }
 a.award-chip:focus-visible { outline: 2px solid var(--color-secondary); outline-offset: 4px; border-radius: 12px; }
-.award-chip img { height: 80px; width: auto; border-radius: 8px; }
+.award-chip img {
+  height: 96px; width: auto;
+  padding: 7px;               /* white plate keeps dark/transparent logos legible */
+  background: #ffffff;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
 .award-icon { color: var(--color-secondary); flex-shrink: 0; }
 .award-title { font-size: 32px; font-family: var(--font-serif); }
 .award-sep { color: var(--color-secondary); font-size: 16px; }
@@ -92,7 +99,7 @@ a.award-chip:focus-visible { outline: 2px solid var(--color-secondary); outline-
 @media (max-width: 640px) {
   .awards-band { padding: 30px 0 26px; }
   .awards-title { font-size: 28px; margin-bottom: 18px; }
-  .award-chip img { height: 56px; }
+  .award-chip img { height: 64px; padding: 5px; }
   .award-title { font-size: 24px; }
 }
 

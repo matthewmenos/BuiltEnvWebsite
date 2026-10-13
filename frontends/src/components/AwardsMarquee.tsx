@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Award } from 'lucide-react';
 import type { IAward } from 'shared/schema';
@@ -13,8 +13,13 @@ import { mediaUrl } from '../lib/upload';
  * motion users get a static, manually scrollable row — matching the
  * NoticeBar / hero conventions.
  */
+/** Constant scroll speed in px/second — brisk but still readable. */
+const MARQUEE_SPEED_PX_PER_SEC = 130;
+
 const AwardsMarquee: React.FC = () => {
   const [awards, setAwards] = useState<IAward[]>([]);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [groupWidth, setGroupWidth] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,10 +36,34 @@ const AwardsMarquee: React.FC = () => {
     };
   }, []);
 
+  // Measure one group's rendered width so the loop scrolls at a constant
+  // speed regardless of how many awards (or how wide their logos) are.
+  // ResizeObserver + load re-measure after the (lazy) images settle.
+  useEffect(() => {
+    if (awards.length === 0) return undefined;
+    const group = trackRef.current?.children[0] as HTMLElement | undefined;
+    if (!group) return undefined;
+    const measure = () => setGroupWidth(group.offsetWidth);
+    measure();
+    window.addEventListener('resize', measure);
+    window.addEventListener('load', measure);
+    const observer =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    observer?.observe(group);
+    return () => {
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('load', measure);
+      observer?.disconnect();
+    };
+  }, [awards.length]);
+
   if (awards.length === 0) return null;
 
-  // Roughly ~8s per award, clamped so very long/short lists still feel right.
-  const duration = Math.min(120, Math.max(30, awards.length * 8));
+  // Measured width preferred; estimate only until the first paint.
+  const duration =
+    groupWidth > 0
+      ? Math.max(6, groupWidth / MARQUEE_SPEED_PX_PER_SEC)
+      : Math.max(12, Math.min(60, awards.length * 5));
 
   const group = (duplicate: boolean) => (
     <div className="awards-group" aria-hidden={duplicate ? 'true' : undefined}>
@@ -44,7 +73,7 @@ const AwardsMarquee: React.FC = () => {
             {award.image ? (
               <img src={mediaUrl(award.image)} alt="" loading="lazy" decoding="async" />
             ) : (
-              <Award size={44} className="award-icon" aria-hidden="true" />
+              <Award size={56} className="award-icon" aria-hidden="true" />
             )}
             <span className="award-title">{award.title}</span>
           </Link>
@@ -58,7 +87,11 @@ const AwardsMarquee: React.FC = () => {
     <section className="awards-band" aria-label="Awards and recognition">
       <h2 className="awards-title">Awards &amp; Recognition</h2>
       <div className="awards-marquee">
-        <div className="awards-track" style={{ animationDuration: `${duration}s` }}>
+        <div
+          ref={trackRef}
+          className="awards-track"
+          style={{ animationDuration: `${duration}s` }}
+        >
           {group(false)}
           {group(true)}
         </div>
