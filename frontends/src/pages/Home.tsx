@@ -56,8 +56,13 @@ const Home: React.FC = () => {
     publicApi
       .listStaff()
       .then((members) => {
-        const first = members[0];
-        if (!cancelled && first) setHod(first);
+        // The welcome message is written by the HOD — feature whoever has one,
+        // not just whoever happens to sort first.
+        const withWelcome = members.find(
+          (m) => typeof m.welcomeMessage === 'string' && m.welcomeMessage.trim().length > 0
+        );
+        const chosen = withWelcome ?? members[0];
+        if (!cancelled && chosen) setHod(chosen);
       })
       .catch(() => {});
     publicApi

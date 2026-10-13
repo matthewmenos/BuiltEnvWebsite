@@ -19,6 +19,8 @@ export interface ResourceConfig {
   required: string[];
   /** Build the insert row (id generated for you). */
   buildValues: (body: Record<string, any>, req: VercelRequest) => Record<string, any>;
+  /** Optional ORDER BY expression(s) for the list query (drizzle `asc()`/`desc()`). */
+  orderBy?: any;
   /** If true, POST is public (e.g. contact form). Default: POST needs auth. */
   publicWrite?: boolean;
   /**
@@ -91,9 +93,13 @@ export async function handleResource(
       const [{ count: total }] = await db
         .select({ count: count() })
         .from(config.table);
-      const rows = await db
-        .select()
-        .from(config.table)
+      const listQuery = db.select().from(config.table);
+      const rows = await (config.orderBy
+        ? Array.isArray(config.orderBy)
+          ? listQuery.orderBy(...config.orderBy)
+          : listQuery.orderBy(config.orderBy)
+        : listQuery
+      )
         .limit(limit)
         .offset(offset);
       sendJson(res, 200, {
@@ -113,6 +119,33 @@ export async function handleResource(
         requireAuth(req);
       }
       const body = await readJsonBody<Record<string, any>>(req);
+      // Bulk reorder: POST ?action=reorder with { order: string[] } of row ids;
+      // each id gets sortOrder = its array index. Guarded to resources that
+      // expose a sort_order column.
+      const q = req.query as Record<string, string | string[] | undefined>;
+      const action = Array.isArray(q.action) ? q.action[0] : q.action;
+      if (action === 'reorder') {
+        if (!config.table.sortOrder) {
+          sendJson(res, 400, { error: 'This resource does not support reordering' });
+          return;
+        }
+        const order: unknown = body?.order;
+        if (!Array.isArray(order) || order.some((id) => typeof id !== 'string')) {
+          sendJson(res, 400, { error: 'Expected { order: string[] } of row ids' });
+          return;
+        }
+        const db: any = getDb();
+        for (let i = 0; i < order.length; i++) {
+          const patch: Record<string, any> = { sortOrder: i };
+          if (config.table.updatedAt) patch.updatedAt = new Date();
+          await db
+            .update(config.table)
+            .set(patch)
+            .where(eq(config.table.id, order[i] as string));
+        }
+        sendJson(res, 200, { ok: true, count: order.length });
+        return;
+      }
       const missing = config.required.filter(
         (k) => body[k] === undefined || body[k] === null || body[k] === ''
       );

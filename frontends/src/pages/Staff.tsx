@@ -35,7 +35,12 @@ const Staff: React.FC = () => {
               <img src={mediaUrl(member.image)} alt={member.name} loading="lazy" decoding="async" />
             </div>
             <div className="staff-content">
-              <h3 className="staff-name">{member.name}</h3>
+              <h3 className="staff-name">
+                {member.name}
+                {typeof member.welcomeMessage === 'string' && member.welcomeMessage.trim().length > 0 && (
+                  <span className="badge badge-primary" style={{ marginLeft: 8 }}>HOD</span>
+                )}
+              </h3>
               <p className="staff-position">{member.position}</p>
               <p className="staff-department">{member.department}</p>
               <p className="staff-bio">{member.bio}</p>

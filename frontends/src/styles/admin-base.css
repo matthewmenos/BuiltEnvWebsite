@@ -207,6 +207,30 @@
 .badge-cell { display: flex; align-items: center; gap: 8px; }
 
 /* ============================================================
+   Staff list — drag-to-reorder
+   ============================================================ */
+.drag-cell { width: 36px; text-align: center; }
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border, #d9dee5);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-light, #667085);
+  cursor: grab;
+  touch-action: none;
+}
+.drag-handle:hover:not(:disabled) { background: rgba(0, 0, 0, 0.04); }
+.drag-handle:active:not(:disabled) { cursor: grabbing; }
+.drag-handle:disabled { opacity: 0.4; cursor: not-allowed; }
+tr.row-dragging { background: rgba(0, 0, 0, 0.03); opacity: 1; }
+tr.row-dragging td { border-color: var(--color-accent, #c8102e); }
+
+/* ============================================================
    Tables
    ============================================================ */
 .table-wrapper {

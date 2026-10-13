@@ -73,6 +73,7 @@ export interface IStaff {
   bio: string;
   welcomeMessage?: string;
   image: string;
+  sortOrder?: number;
 }
 
 /** Gallery album (openable collection of photos) shown on the public Gallery page. */
@@ -218,6 +219,7 @@ export const staff = pgTable('staff', {
   welcomeMessage: text('welcome_message'),
   image: text('image').notNull(),
   researchInterests: text('research_interests').notNull().default('[]'),
+  sortOrder: integer('sort_order').notNull().default(0),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

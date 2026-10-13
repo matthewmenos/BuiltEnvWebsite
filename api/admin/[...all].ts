@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import {
   contacts as contactsTable,
   events as eventsTable,
@@ -75,6 +75,7 @@ const RESOURCES: Record<string, ResourceConfig> = {
     table: staffTable,
     defaultLimit: 50,
     required: ['name', 'position', 'email', 'bio', 'image'],
+    orderBy: [asc(staffTable.sortOrder), asc(staffTable.createdAt)],
     buildValues: (body) => ({
       name: body.name,
       position: body.position,
@@ -86,6 +87,7 @@ const RESOURCES: Record<string, ResourceConfig> = {
       welcomeMessage: body.welcomeMessage ?? null,
       image: body.image,
       researchInterests: body.researchInterests || '[]',
+      sortOrder: body.sortOrder ?? 0,
     }),
   },
   gallery: {
