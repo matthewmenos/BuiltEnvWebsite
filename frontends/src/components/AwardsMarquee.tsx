@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Award } from 'lucide-react';
 import type { IAward } from 'shared/schema';
 import { publicApi } from '../lib/publicApi';
@@ -39,15 +40,14 @@ const AwardsMarquee: React.FC = () => {
     <div className="awards-group" aria-hidden={duplicate ? 'true' : undefined}>
       {awards.map((award) => (
         <React.Fragment key={award.id}>
-          <span className="award-chip">
+          <Link to={`/awards/${award.id}`} className="award-chip">
             {award.image ? (
               <img src={mediaUrl(award.image)} alt="" loading="lazy" decoding="async" />
             ) : (
               <Award size={44} className="award-icon" aria-hidden="true" />
             )}
             <span className="award-title">{award.title}</span>
-            {award.detail && <span className="award-detail">{award.detail}</span>}
-          </span>
+          </Link>
           <span className="award-sep" aria-hidden="true">★</span>
         </React.Fragment>
       ))}

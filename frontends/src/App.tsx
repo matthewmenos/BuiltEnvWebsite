@@ -24,6 +24,7 @@ import GalleryAlbum from './pages/GalleryAlbum';
 import Research from './pages/Research';
 import Resources from './pages/Resources';
 import NoticeDetail from './pages/NoticeDetail';
+import AwardDetail from './pages/AwardDetail';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -72,6 +73,7 @@ function App() {
             <Route path="gallery" element={<Gallery />} />
             <Route path="gallery/albums/:id" element={<GalleryAlbum />} />
             <Route path="gallery/:id" element={<GalleryDetail />} />
+            <Route path="awards/:id" element={<AwardDetail />} />
             <Route path="contact" element={<Contact />} />
           </Route>
 
