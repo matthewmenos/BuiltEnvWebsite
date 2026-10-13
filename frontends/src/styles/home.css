@@ -41,12 +41,12 @@
   color: #ffffff;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 36px 0 30px;
+  padding: 44px 0 38px;
   text-align: center;
 }
 .awards-title {
-  font-size: 34px; font-family: var(--font-serif); font-weight: 600;
-  color: #ffffff; padding: 0 24px; margin-bottom: 22px;
+  font-size: 40px; font-family: var(--font-serif); font-weight: 600;
+  color: #ffffff; padding: 0 24px; margin-bottom: 26px;
 }
 .awards-title::after {
   content: ''; display: block;
@@ -70,14 +70,14 @@
 .awards-marquee:hover .awards-track { animation-play-state: paused; }
 .awards-group { display: flex; align-items: center; flex-shrink: 0; }
 .award-chip {
-  display: inline-flex; align-items: center; gap: 14px;
-  padding: 0 26px; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 18px;
+  padding: 0 34px; white-space: nowrap;
 }
-.award-chip img { height: 52px; width: auto; border-radius: 6px; }
+.award-chip img { height: 80px; width: auto; border-radius: 8px; }
 .award-icon { color: var(--color-secondary); flex-shrink: 0; }
-.award-title { font-size: 26px; font-family: var(--font-serif); }
-.award-detail { font-size: 16px; color: #d7e9f1; }
-.award-sep { color: var(--color-secondary); font-size: 14px; }
+.award-title { font-size: 32px; font-family: var(--font-serif); }
+.award-detail { font-size: 19px; color: #d7e9f1; }
+.award-sep { color: var(--color-secondary); font-size: 16px; }
 @keyframes awards-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -87,10 +87,11 @@
   .awards-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
 }
 @media (max-width: 640px) {
-  .awards-band { padding: 26px 0 22px; }
-  .awards-title { font-size: 24px; margin-bottom: 16px; }
-  .award-chip img { height: 40px; }
-  .award-title { font-size: 20px; }
+  .awards-band { padding: 30px 0 26px; }
+  .awards-title { font-size: 28px; margin-bottom: 18px; }
+  .award-chip img { height: 56px; }
+  .award-title { font-size: 24px; }
+  .award-detail { font-size: 15px; }
 }
 
 /* â”€â”€ Intro video section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

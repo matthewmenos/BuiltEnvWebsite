@@ -43,7 +43,7 @@ const AwardsMarquee: React.FC = () => {
             {award.image ? (
               <img src={mediaUrl(award.image)} alt="" loading="lazy" decoding="async" />
             ) : (
-              <Award size={30} className="award-icon" aria-hidden="true" />
+              <Award size={44} className="award-icon" aria-hidden="true" />
             )}
             <span className="award-title">{award.title}</span>
             {award.detail && <span className="award-detail">{award.detail}</span>}
