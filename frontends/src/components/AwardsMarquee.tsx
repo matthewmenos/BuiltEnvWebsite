@@ -56,7 +56,7 @@ const AwardsMarquee: React.FC = () => {
 
   return (
     <section className="awards-band" aria-label="Awards and recognition">
-      <span className="awards-band-label">Awards &amp; Recognition</span>
+      <h2 className="awards-title">Awards &amp; Recognition</h2>
       <div className="awards-marquee">
         <div className="awards-track" style={{ animationDuration: `${duration}s` }}>
           {group(false)}

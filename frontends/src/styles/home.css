@@ -35,21 +35,23 @@
 
 /* —— Awards marquee —— */
 .awards-band {
-  display: flex;
-  align-items: center;
+  display: block;
   width: 100%;
   background: var(--color-primary-dark);
   color: #ffffff;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 22px 0;
+  padding: 36px 0 30px;
+  text-align: center;
 }
-.awards-band-label {
-  flex-shrink: 0;
-  margin-left: 24px;
-  font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-  padding: 5px 12px; border-radius: 999px;
-  background: var(--color-secondary); color: #2a2205; white-space: nowrap;
+.awards-title {
+  font-size: 34px; font-family: var(--font-serif); font-weight: 600;
+  color: #ffffff; padding: 0 24px; margin-bottom: 22px;
+}
+.awards-title::after {
+  content: ''; display: block;
+  width: 64px; height: 3px; border-radius: 2px;
+  background: var(--color-secondary); margin: 10px auto 0;
 }
 .awards-marquee {
   flex: 1;
@@ -85,7 +87,8 @@
   .awards-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
 }
 @media (max-width: 640px) {
-  .awards-band-label { display: none; }
+  .awards-band { padding: 26px 0 22px; }
+  .awards-title { font-size: 24px; margin-bottom: 16px; }
   .award-chip img { height: 40px; }
   .award-title { font-size: 20px; }
 }
