@@ -74,7 +74,7 @@ const RESOURCES: Record<string, ResourceConfig> = {
   staff: {
     table: staffTable,
     defaultLimit: 50,
-    required: ['name', 'position', 'email', 'bio', 'image'],
+    required: ['name', 'position', 'email', 'image'],
     orderBy: [asc(staffTable.sortOrder), asc(staffTable.createdAt)],
     buildValues: (body) => ({
       name: body.name,
@@ -83,7 +83,8 @@ const RESOURCES: Record<string, ResourceConfig> = {
       email: body.email,
       phone: body.phone || '',
       address: body.address || '',
-      bio: body.bio,
+      // bio column is NOT NULL with no default — always send a string.
+      bio: body.bio || '',
       welcomeMessage: body.welcomeMessage ?? null,
       image: body.image,
       researchInterests: body.researchInterests || '[]',

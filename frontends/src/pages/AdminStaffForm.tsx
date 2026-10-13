@@ -169,8 +169,15 @@ const AdminStaffForm: React.FC = () => {
           <input id="address" name="address" value={form.address} onChange={handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="bio">Biography *</label>
-          <textarea id="bio" name="bio" rows={5} value={form.bio} onChange={handleChange} />
+          <label htmlFor="bio">Biography</label>
+          <textarea
+            id="bio"
+            name="bio"
+            rows={5}
+            value={form.bio}
+            onChange={handleChange}
+            placeholder="Optional. Shown on the staff card and profile page."
+          />
         </div>
         <div className="form-group">
           <label htmlFor="welcomeMessage">Welcome message (HOD speech)</label>
