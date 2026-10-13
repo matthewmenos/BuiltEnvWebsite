@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
+  Award,
   LayoutDashboard,
   House,
   GraduationCap,
@@ -26,6 +27,7 @@ const adminLinks = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Homepage Slides', path: '/admin/home', icon: House },
   { label: 'Homepage Settings', path: '/admin/home-settings', icon: Settings },
+  { label: 'Awards', path: '/admin/awards', icon: Award },
   { label: 'Programmes', path: '/admin/programmes', icon: GraduationCap },
   { label: 'News', path: '/admin/news', icon: Newspaper },
   { label: 'Events', path: '/admin/events', icon: CalendarDays },

@@ -17,7 +17,8 @@ type ResourceKey =
   | 'notices'
   | 'home-slides'
   | 'research'
-  | 'resource-files';
+  | 'resource-files'
+  | 'awards';
 
 interface Field {
   name: string;
@@ -198,6 +199,18 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
       { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
       { name: 'fileUrl', label: 'File *', type: 'file', required: true },
       { name: 'sortOrder', label: 'Display order', type: 'number', placeholder: 'e.g. 0' },
+      { name: 'active', label: 'Active', type: 'select', options: [ { value: 'true', label: 'Yes' }, { value: 'false', label: 'No' } ] },
+    ],
+  },
+  awards: {
+    titleSingular: 'Award',
+    listPath: '/admin/awards',
+    description: 'Awards scroll in the marquee strip below the homepage hero. Required fields are marked with *.',
+    fields: [
+      { name: 'title', label: 'Title *', required: true, placeholder: 'e.g. Best Surveying Department 2025' },
+      { name: 'detail', label: 'Detail', placeholder: 'e.g. Ghana Institutions of Surveyors · 2025' },
+      { name: 'image', label: 'Logo / badge image', type: 'image', helpText: 'Optional. Shown before the title in the marquee.' },
+      { name: 'sortOrder', label: 'Display order', type: 'number', placeholder: '0 = first' },
       { name: 'active', label: 'Active', type: 'select', options: [ { value: 'true', label: 'Yes' }, { value: 'false', label: 'No' } ] },
     ],
   },

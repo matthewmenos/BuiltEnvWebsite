@@ -123,6 +123,18 @@ export interface ISiteSetting {
   key: string;
   value: string;
 }
+
+/** Award badge shown in the homepage awards marquee (admin-managed). */
+export interface IAward {
+  id: string;
+  title: string;
+  /** Extra line under the title (e.g. "Ghana Institutions of Surveyors · 2025"). */
+  detail: string;
+  /** Optional award logo / badge image. */
+  image: string;
+  sortOrder: number;
+  active: boolean;
+}
 /** Shared Drizzle schema (PostgreSQL tables) */
 
 import {
@@ -342,6 +354,22 @@ export const resourceFiles = pgTable('resource_files', {
   description: text('description').notNull().default(''),
   category: text('category').notNull().default('downloads'),
   fileUrl: text('file_url').notNull(),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/** Awards scrolled in the homepage awards marquee (admin-managed). */
+export const awards = pgTable('awards', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  detail: text('detail').notNull().default(''),
+  image: text('image').notNull().default(''),
   sortOrder: integer('sort_order').notNull().default(0),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true })

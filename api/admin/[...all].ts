@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { asc, eq } from 'drizzle-orm';
 import {
+  awards as awardsTable,
   contacts as contactsTable,
   events as eventsTable,
   galleryAlbums as galleryAlbumsTable,
@@ -188,6 +189,22 @@ const RESOURCES: Record<string, ResourceConfig> = {
       description: body.description || '',
       category: body.category || 'downloads',
       fileUrl: body.fileUrl ?? body.image ?? '',
+      sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
+      active:
+        body.active === undefined
+          ? true
+          : body.active === true || body.active === 'true',
+    }),
+  },
+  awards: {
+    table: awardsTable,
+    defaultLimit: 100,
+    required: ['title'],
+    orderBy: [asc(awardsTable.sortOrder), asc(awardsTable.createdAt)],
+    buildValues: (body) => ({
+      title: body.title,
+      detail: body.detail || '',
+      image: body.image || '',
       sortOrder: Number.isFinite(Number(body.sortOrder)) ? Number(body.sortOrder) : 0,
       active:
         body.active === undefined

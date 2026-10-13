@@ -33,6 +33,61 @@
 .notice-bar-next:hover,
 .notice-bar-close:hover { background: rgba(255, 255, 255, 0.14); color: #ffffff; }
 
+/* —— Awards marquee (below hero, managed in Admin → Awards) ———————————————— */
+.awards-band {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--color-primary-dark);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 10px 0;
+}
+.awards-band-label {
+  flex-shrink: 0;
+  margin-left: 24px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--color-secondary); color: #2a2205; white-space: nowrap;
+}
+.awards-marquee {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  /* Soft edge fades so chips don't pop in/out at the strip borders. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+.awards-track {
+  display: flex;
+  width: max-content;
+  /* Duration is set inline from the award count; this is the fallback. */
+  animation: awards-scroll 40s linear infinite;
+}
+.awards-marquee:hover .awards-track { animation-play-state: paused; }
+.awards-track.is-static { animation: none; }
+.awards-group { display: flex; align-items: center; flex-shrink: 0; }
+.award-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 14px; white-space: nowrap;
+}
+.award-chip img { height: 20px; width: auto; border-radius: 3px; }
+.award-icon { color: var(--color-secondary); flex-shrink: 0; }
+.award-title { font-size: 14px; font-weight: 700; }
+.award-detail { font-size: 13px; color: #d7e9f1; }
+.award-sep { color: var(--color-secondary); font-size: 10px; }
+@keyframes awards-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .awards-track { animation: none; }
+  .awards-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+}
+@media (max-width: 640px) {
+  .awards-band-label { display: none; }
+}
+
 /* â”€â”€ Intro video section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .video-section .section-title { color: var(--color-primary-dark); }
 .video-frame {

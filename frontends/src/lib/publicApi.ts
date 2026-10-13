@@ -1,4 +1,5 @@
 import type {
+  IAward,
   IEvent,
   IGalleryItem,
   INews,
@@ -88,6 +89,12 @@ export const publicApi = {
   listActiveResearch: async () => {
     const areas = await fetchList<IResearchArea>('/api/admin/research', 50);
     return areas
+      .filter((a) => a.active !== false)
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  },
+  listActiveAwards: async (): Promise<IAward[]> => {
+    const awards = await fetchList<IAward>('/api/admin/awards', 100);
+    return awards
       .filter((a) => a.active !== false)
       .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
   },

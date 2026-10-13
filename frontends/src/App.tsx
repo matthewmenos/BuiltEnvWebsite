@@ -38,6 +38,7 @@ import AdminGalleryItems from './pages/AdminGalleryItems';
 import AdminGalleryAlbums from './pages/AdminGalleryAlbums';
 import AdminNotices from './pages/AdminNotices';
 import AdminResourceFiles from './pages/AdminResourceFiles';
+import AdminAwards from './pages/AdminAwards';
 import AdminContacts from './pages/AdminContacts';
 import AdminResourceForm from './pages/AdminResourceForm';
 import AdminHomeSlides from './pages/AdminHomeSlides';
@@ -338,6 +339,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminResourceForm resource="resource-files" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="awards"
+              element={
+                <ProtectedRoute>
+                  <AdminAwards />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="awards/new"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="awards" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="awards/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceForm resource="awards" />
                 </ProtectedRoute>
               }
             />

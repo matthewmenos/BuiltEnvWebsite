@@ -11,6 +11,7 @@ import {
 import { FALLBACK_SETTINGS, publicApi, type SiteSettings } from '../lib/publicApi';
 import { IStaff } from 'shared/schema';
 import NoticeBar from '../components/NoticeBar';
+import AwardsMarquee from '../components/AwardsMarquee';
 import { getVideoEmbed } from '../lib/embed';
 import { mediaUrl } from '../lib/upload';
 
@@ -211,6 +212,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      {/* 1.5 — AWARDS MARQUEE (managed in Admin → Awards; hidden while empty) */}
+      <AwardsMarquee />
       {/* 2 — WELCOME FROM THE HEAD OF DEPARTMENT */}
       <section className="container home-section">
         <div className="section-head">
