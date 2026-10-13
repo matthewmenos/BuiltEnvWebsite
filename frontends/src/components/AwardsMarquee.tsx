@@ -5,11 +5,12 @@ import { publicApi } from '../lib/publicApi';
 import { mediaUrl } from '../lib/upload';
 
 /**
- * Scrolling awards marquee shown directly below the homepage hero.
+ * Scrolling awards marquee shown below the HOD welcome on the homepage.
  * Content comes from Admin → Awards; the whole strip stays hidden while
  * no awards exist. The track is rendered twice so the CSS loop is
- * seamless, auto-pauses on hover, and goes static for reduced-motion
- * users (matching the NoticeBar / hero conventions).
+ * seamless and auto-scrolls continuously (pausing on hover). Reduced
+ * motion users get a static, manually scrollable row — matching the
+ * NoticeBar / hero conventions.
  */
 const AwardsMarquee: React.FC = () => {
   const [awards, setAwards] = useState<IAward[]>([]);
@@ -31,8 +32,8 @@ const AwardsMarquee: React.FC = () => {
 
   if (awards.length === 0) return null;
 
-  // Roughly ~6s per award, clamped so very long/short lists still feel right.
-  const duration = Math.min(90, Math.max(25, awards.length * 6));
+  // Roughly ~8s per award, clamped so very long/short lists still feel right.
+  const duration = Math.min(120, Math.max(30, awards.length * 8));
 
   const group = (duplicate: boolean) => (
     <div className="awards-group" aria-hidden={duplicate ? 'true' : undefined}>
@@ -42,7 +43,7 @@ const AwardsMarquee: React.FC = () => {
             {award.image ? (
               <img src={mediaUrl(award.image)} alt="" loading="lazy" decoding="async" />
             ) : (
-              <Award size={16} className="award-icon" aria-hidden="true" />
+              <Award size={30} className="award-icon" aria-hidden="true" />
             )}
             <span className="award-title">{award.title}</span>
             {award.detail && <span className="award-detail">{award.detail}</span>}
@@ -57,10 +58,7 @@ const AwardsMarquee: React.FC = () => {
     <section className="awards-band" aria-label="Awards and recognition">
       <span className="awards-band-label">Awards &amp; Recognition</span>
       <div className="awards-marquee">
-        <div
-          className={`awards-track${awards.length < 2 ? ' is-static' : ''}`}
-          style={{ animationDuration: `${duration}s` }}
-        >
+        <div className="awards-track" style={{ animationDuration: `${duration}s` }}>
           {group(false)}
           {group(true)}
         </div>

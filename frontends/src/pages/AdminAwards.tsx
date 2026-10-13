@@ -74,7 +74,7 @@ const AdminAwards: React.FC = () => {
   return (
     <div>
       <h1 className="page-title">Awards</h1>
-      <p className="page-description">Awards shown in the scrolling marquee strip below the homepage hero.</p>
+      <p className="page-description">Awards shown in the scrolling marquee strip below the HOD welcome on the homepage.</p>
       <div className="admin-section-header">
         <h2>All Awards</h2>
         <Link to="/admin/awards/new" className="btn btn-primary">

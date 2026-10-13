@@ -205,7 +205,7 @@ const RESOURCES: Record<ResourceKey, ResourceConfig> = {
   awards: {
     titleSingular: 'Award',
     listPath: '/admin/awards',
-    description: 'Awards scroll in the marquee strip below the homepage hero. Required fields are marked with *.',
+    description: 'Awards scroll in the marquee strip below the HOD welcome on the homepage. Required fields are marked with *.',
     fields: [
       { name: 'title', label: 'Title *', required: true, placeholder: 'e.g. Best Surveying Department 2025' },
       { name: 'detail', label: 'Detail', placeholder: 'e.g. Ghana Institutions of Surveyors · 2025' },

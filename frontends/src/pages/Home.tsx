@@ -212,8 +212,6 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* 1.5 — AWARDS MARQUEE (managed in Admin → Awards; hidden while empty) */}
-      <AwardsMarquee />
       {/* 2 — WELCOME FROM THE HEAD OF DEPARTMENT */}
       <section className="container home-section">
         <div className="section-head">
@@ -243,6 +241,9 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* 2.4 — AWARDS MARQUEE (managed in Admin → Awards; hidden while empty) */}
+      <AwardsMarquee />
 
       {/* 2.5 - INTRO VIDEO (managed in Admin > Homepage Settings) */}
       {videoEmbed && (
