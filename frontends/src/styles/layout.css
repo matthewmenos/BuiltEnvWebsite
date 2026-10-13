@@ -7,7 +7,7 @@
 /* Every direct page wrapper inside the shell gets the fluid container width,
    so listing grids expand on large screens like the header/footer. Home
    manages its own full-bleed bands and is excluded. */
-.page-main > :not(.home) {
+.page-main > :not(.home):not(.award-page) {
   width: 100%;
   max-width: 1920px;
   margin-left: auto;
@@ -16,13 +16,15 @@
   padding-right: 20px;
 }
 @media (min-width: 1200px) {
-  .page-main > :not(.home) { padding-left: 32px; padding-right: 32px; }
+  .page-main > :not(.home):not(.award-page) { padding-left: 32px; padding-right: 32px; }
 }
 @media (min-width: 1600px) {
-  .page-main > :not(.home) { padding-left: 48px; padding-right: 48px; }
+  .page-main > :not(.home):not(.award-page) { padding-left: 48px; padding-right: 48px; }
 }
 /* Home manages its own band/hero spacing flush against navbar/footer. */
 .page-main:has(.home) { padding-top: 0; padding-bottom: 0; }
+/* Award detail is a screen-filling band flush against the navbar/footer. */
+.page-main:has(.award-page) { padding-top: 0; padding-bottom: 0; }
 
 .navbar {
   background: var(--color-background);
