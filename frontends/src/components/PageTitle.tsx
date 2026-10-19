@@ -130,6 +130,23 @@ const upsertMeta = (
   el.setAttribute('content', content);
 };
 
+/** Create-or-update a <script type="application/ld+json"> JSON-LD block. */
+const upsertJsonLd = (data: Record<string, unknown>): void => {
+  // Escape the JSON for safe embedding inside a <script> tag.
+  const json = JSON.stringify(data)
+    .replace(/<!--/g, '<\\!--')
+    .replace(/\\?-->/g, '\\\\-->');
+  let el = document.head.querySelector<HTMLScriptElement>(
+    'script[type="application/ld+json"]'
+  );
+  if (!el) {
+    el = document.createElement('script');
+    el.setAttribute('type', 'application/ld+json');
+    document.head.appendChild(el);
+  }
+  el.textContent = json;
+};
+
 const PageTitle: React.FC = () => {
   const { pathname } = useLocation();
 
@@ -153,6 +170,36 @@ const PageTitle: React.FC = () => {
       document.head.appendChild(canonical);
     }
     canonical.setAttribute('href', url);
+
+    // Rewrite the WebPage JSON-LD block so crawlers see the correct
+    // structured data for the current route (an SPA renders in the
+    // browser, so the server-served homepage JSON-LD is only a fallback).
+    upsertJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      url: url,
+      name: route?.title ?? SUFFIX,
+      description: description,
+      inLanguage: 'en-GB',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: SUFFIX,
+        url: SITE,
+      },
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: route?.title ?? 'Home',
+            item: url,
+          },
+        ],
+      },
+      datePublished: '2026-09-01',
+      dateModified: new Date().toISOString().slice(0, 10),
+    });
   }, [pathname]);
 
   return null;
