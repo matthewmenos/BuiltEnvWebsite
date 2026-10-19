@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
  * Canonical origin — must match the SITE_URL used by api/sitemap.xml.ts and
  * the canonical/og:url tags in index.html.
  */
-const SITE = 'https://builtenv.vercel.app';
+const SITE = 'https://pubuiltenvironment.org';
 const SUFFIX = 'Department of Built Environment, Pentecost University';
 
 interface RouteMeta {

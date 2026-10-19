@@ -73,6 +73,6 @@ export const env = {
    * env var instead of a code change.
    */
   get siteUrl(): string {
-    return read('SITE_URL') || 'https://builtenv.vercel.app';
+    return read('SITE_URL') || 'https://pubuiltenvironment.org';
   },
 };

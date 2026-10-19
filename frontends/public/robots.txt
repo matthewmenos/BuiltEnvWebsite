@@ -9,4 +9,4 @@ Disallow: /admin
 
 # Dynamic sitemap: all public index pages plus DB-backed detail pages
 # (programmes, news, events, staff, gallery, live notices).
-Sitemap: https://builtenv.vercel.app/sitemap.xml
+Sitemap: https://pubuiltenvironment.org/sitemap.xml
