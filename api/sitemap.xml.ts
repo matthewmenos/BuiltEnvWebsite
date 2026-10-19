@@ -34,8 +34,30 @@ interface UrlEntry {
   priority: string;
 }
 
-/** Canonical origin; SITE_URL env allows a custom domain without a redeploy. */
-const SITE = env.siteUrl.replace(/\/+$/, '');
+/** Canonical origin fallback; per-request host takes precedence (see getSite). */
+const FALLBACK_SITE = env.siteUrl.replace(/\/+$/, '');
+
+/**
+ * Derive the canonical origin from the incoming request so the sitemap always
+ * matches the domain it is served from (apex vs www, custom domains, preview
+ * deployments) — even if the SITE_URL env var still holds a previous domain.
+ * Falls back to env.siteUrl when host headers are absent (e.g. local tests).
+ */
+function getSite(req: VercelRequest): string {
+  const forwardedProto = (req.headers['x-forwarded-proto'] as string | undefined)
+    ?.split(',')[0]
+    ?.trim();
+  const forwardedHost = (req.headers['x-forwarded-host'] as string | undefined)
+    ?.split(',')[0]
+    ?.trim();
+  const host =
+    forwardedHost ||
+    (typeof req.headers.host === 'string' ? req.headers.host.split(',')[0].trim() : '');
+  if (host) {
+    return `${forwardedProto || 'https'}://${host}`.replace(/\/+$/, '');
+  }
+  return FALLBACK_SITE;
+}
 
 /** Index pages that always exist (no DB dependency). */
 const STATIC_ROUTES: UrlEntry[] = [
@@ -106,10 +128,10 @@ async function dynamicEntries(): Promise<UrlEntry[]> {
   ];
 }
 
-function toXml(entries: UrlEntry[]): string {
+function toXml(site: string, entries: UrlEntry[]): string {
   const body = entries
     .map((entry) => {
-      const parts = [`    <loc>${SITE}${entry.loc}</loc>`];
+      const parts = [`    <loc>${site}${entry.loc}</loc>`];
       if (entry.lastmod) parts.push(`    <lastmod>${entry.lastmod}</lastmod>`);
       parts.push(`    <changefreq>${entry.changefreq}</changefreq>`);
       parts.push(`    <priority>${entry.priority}</priority>`);
@@ -140,5 +162,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
-  res.status(200).send(toXml(entries));
+  res.status(200).send(toXml(getSite(req), entries));
 }
