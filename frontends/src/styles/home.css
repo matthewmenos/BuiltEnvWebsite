@@ -157,21 +157,53 @@ a.award-chip:focus-visible { outline: 2px solid var(--color-secondary); outline-
 }
 
 /* â”€â”€ Intro video section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-.video-section .section-title { color: var(--color-primary-dark); }
+.video-section {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 20px;
+}
+.video-section .section-head {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+@media (min-width: 1200px) {
+  .video-section .section-head { max-width: 1600px; padding-left: 32px; padding-right: 32px; }
+}
+@media (min-width: 1600px) {
+  .video-section .section-head { max-width: 1920px; padding-left: 48px; padding-right: 48px; }
+}
+.video-section .section-title {
+  color: var(--color-primary-dark);
+  margin-bottom: 0;
+}
 .video-frame {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: var(--radius);
+  border-radius: 0;
   overflow: hidden;
   background: #000;
-  box-shadow: 0 12px 32px rgba(15, 61, 78, 0.18);
 }
 .video-frame iframe,
 .video-frame video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  border: 0; display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 @media (max-width: 640px) {
   .notice-bar-inner { padding: 8px 16px; }
