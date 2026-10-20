@@ -20,6 +20,30 @@
 .login-form .btn { width: 100%; }
 .login-help { margin-top: 16px; font-size: 13px; color: var(--color-text-light); text-align: center; }
 
+/* Password reveal toggle — icon button sits inside the input's right edge. */
+.password-field { position: relative; }
+.password-field input { padding-right: 44px; }
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.password-toggle:hover { background: var(--color-accent); color: var(--color-primary-dark); }
+.password-toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+.password-toggle:disabled { opacity: 0.5; cursor: not-allowed; }
+
 @media (max-width: 640px) {
   .login-page { padding: 32px 16px; }
   .login-card { padding: 28px 22px; }
